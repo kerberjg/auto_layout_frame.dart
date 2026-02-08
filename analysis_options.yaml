@@ -1,0 +1,28 @@
+include: package:lints/recommended.yaml
+
+analyzer:
+  exclude:
+    - build/**
+    - lib/**.g.dart
+  strong-mode:
+    implicit-casts: false
+    implicit-dynamic: false
+  errors:
+    unused_import: warning
+    dead_code: warning
+    public_member_api_docs: error
+
+lints:
+  - public_member_api_docs
+  - camel_case_types
+  - camel_case_extensions
+  - file_names
+  - package_names
+  - library_prefixes
+  - non_constant_identifier_names
+  - constant_identifier_names
+  - directives_ordering
+  - curly_braces_in_flow_control_structures
+
+formatter:
+  page_width: 80

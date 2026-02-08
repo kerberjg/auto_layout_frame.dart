@@ -1,0 +1,17 @@
+name: dart_package_template
+description: A pub.dev-ready Dart package template with recommended settings.
+version: 0.1.0
+
+license: MPL-2.0
+homepage: https://github.com/kerberjg/dart_package_template
+repository: https://github.com/kerberjg/dart_package_template
+issue_tracker: https://github.com/kerberjg/dart_package_template/issues
+
+environment:
+  sdk: '>=3.0.0 <4.0.0'
+
+dependencies:
+
+dev_dependencies:
+  lints: ^6.0.0
+  test: ^1.16.0
