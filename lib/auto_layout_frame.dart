@@ -277,7 +277,12 @@ class AutoLayoutFrame extends StatelessWidget {
       case AutoLayoutOverflowBehavior.clip:
         child = ClipRect(
           clipBehavior: Clip.hardEdge,
-          child: child,
+          child: OverflowBox(
+            alignment: alignChildren,
+            maxWidth: double.infinity,
+            maxHeight: double.infinity,
+            child: child,
+          ),
         );
         break;
       case AutoLayoutOverflowBehavior.scroll:
