@@ -205,8 +205,11 @@ class AutoLayoutFrame extends StatelessWidget {
   /// Takes care of padding as well as children's inner placement
   /// (alignment/direction)
   Widget _buildInnerLayout(final BuildContext context) {
+    final double spacing = gap != double.infinity ? gap ?? 0 : 0;
+
     Widget child = direction == AutoLayoutDirection.vertical
         ? Column(
+            spacing: spacing,
             // defined by this.alignment.y
             mainAxisAlignment: gap == double.infinity
                 ? MainAxisAlignment.spaceBetween
@@ -228,6 +231,7 @@ class AutoLayoutFrame extends StatelessWidget {
           )
         : direction == AutoLayoutDirection.horizontal
             ? Row(
+                spacing: spacing,
                 // defined by this.alignment.x
                 mainAxisAlignment: gap == double.infinity
                     ? MainAxisAlignment.spaceBetween
@@ -249,8 +253,8 @@ class AutoLayoutFrame extends StatelessWidget {
                 children: _buildChildren(),
               )
             : Wrap(
-                spacing: gap ?? 0,
-                runSpacing: gap ?? 0,
+                spacing: spacing,
+                runSpacing: spacing,
                 alignment: gap == double.infinity
                     ? WrapAlignment.spaceBetween
                     : alignChildren.x == 0
@@ -306,21 +310,10 @@ class AutoLayoutFrame extends StatelessWidget {
 
   /// Builds children with gaps
   List<Widget> _buildChildren() {
-    // No artificial gaps needed for [Wrap]
-    if (direction == AutoLayoutDirection.wrap) return this.children;
-
     final List<Widget> children = [];
     for (int i = 0; i < this.children.length; i++) {
       // children.add(this.children[i]);
       children.add(_layoutChild(this.children[i]));
-
-      // Add gap (except last)
-      if (i != this.children.length - 1) {
-        children.add(SizedBox(
-          width: direction == AutoLayoutDirection.horizontal ? gap : 0,
-          height: direction == AutoLayoutDirection.vertical ? gap : 0,
-        ));
-      }
     }
     return children;
   }
