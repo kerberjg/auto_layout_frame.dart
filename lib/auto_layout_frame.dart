@@ -100,7 +100,7 @@ class AutoLayoutFrame extends StatelessWidget {
   final double? height;
 
   /// The background color of this frame. Defaults to transparent.
-  final Color backgroundColor;
+  final Color? backgroundColor;
 
   /// Whether this frame is nested inside another [AutoLayoutFrame]
   final ValueNotifier<bool?> _isNested = ValueNotifier(null);
@@ -119,7 +119,7 @@ class AutoLayoutFrame extends StatelessWidget {
     final AutoLayoutResizing? horizontalResizing,
     final AutoLayoutResizing? verticalResizing,
     this.overflow = AutoLayoutOverflowBehavior.none,
-    final Color? backgroundColor = const Color(0x00000000),
+    this.backgroundColor,
   })  : horizontalResizing = horizontalResizing ??
             (width != null
                 ? AutoLayoutResizing.fixed
@@ -127,8 +127,7 @@ class AutoLayoutFrame extends StatelessWidget {
         verticalResizing = verticalResizing ??
             (height != null
                 ? AutoLayoutResizing.fixed
-                : AutoLayoutResizing.hugContents),
-        backgroundColor = backgroundColor! {
+                : AutoLayoutResizing.hugContents) {
     assert(
         !(this.horizontalResizing == AutoLayoutResizing.fixed && width == null),
         "width must be specified when horizontalResizing is fixed");
@@ -179,7 +178,7 @@ class AutoLayoutFrame extends StatelessWidget {
               // NOTE: this is required because ColoredBox is [HitTestBehavior.opaque]
               ignoring: true,
               child: ColoredBox(
-                color: backgroundColor,
+                color: backgroundColor!,
               ),
             ),
             _buildInnerLayout(context),
