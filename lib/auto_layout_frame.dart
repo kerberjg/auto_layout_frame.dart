@@ -159,21 +159,11 @@ class AutoLayoutFrame extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       // debugPrint('Frame constraints:${constraints}');
 
-      final Widget outerLayout = SizedBox(
-        width: horizontalResizing == AutoLayoutResizing.fillContainer
-            ? constraints.maxWidth
-            : horizontalResizing == AutoLayoutResizing.hugContents
-                ? null
-                : width,
-        height: verticalResizing == AutoLayoutResizing.fillContainer
-            ? constraints.maxHeight
-            : verticalResizing == AutoLayoutResizing.hugContents
-                ? null
-                : height,
-        child: Stack(
-          fit: StackFit.passthrough,
-          children: [
-            // Background color
+      final Widget child = Stack(
+        fit: StackFit.passthrough,
+        children: [
+          // Background color
+          if (backgroundColor != null)
             IgnorePointer(
               // NOTE: this is required because ColoredBox is [HitTestBehavior.opaque]
               ignoring: true,
@@ -181,9 +171,22 @@ class AutoLayoutFrame extends StatelessWidget {
                 color: backgroundColor!,
               ),
             ),
-            _buildInnerLayout(context),
-          ],
-        ),
+          _buildInnerLayout(context),
+        ],
+      );
+
+      final Widget outerLayout = SizedBox(
+        width: switch (horizontalResizing) {
+          AutoLayoutResizing.fillContainer => constraints.maxWidth,
+          AutoLayoutResizing.hugContents => null,
+          AutoLayoutResizing.fixed => width,
+        },
+        height: switch (verticalResizing) {
+          AutoLayoutResizing.fillContainer => constraints.maxHeight,
+          AutoLayoutResizing.hugContents => null,
+          AutoLayoutResizing.fixed => height,
+        },
+        child: child,
       );
 
       // If not nested in another [AutoLayoutFrame], wrap in Align to make sure the size is respected
