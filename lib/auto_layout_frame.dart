@@ -320,25 +320,38 @@ class AutoLayoutFrame extends StatelessWidget {
 
   /// Handles nested [AutoLayoutFrame]s and wraps them properly.
   ///
-  /// When nesting an infinitely growing Widget inside of another, the layout crashes with an unbound constraint error.
-  /// This would be regularly fixed by simply wrapping the child in an [Expanded] widget, but this is not possible
-  /// because then the parent is required to be a [Flex]/[Row]/[Column]/[Wrap] widget, which is not always the case
-  /// when nesting [AutoLayoutFrame]s, as there's other layout utilities in the middle (e.g. [Padding], see [_buildInnerLayout] and [_buildOuterLayout] for reference)
-  /// This method takes care of wrapping the child in a [Flexible] widget if needed (when the child [AutoLayoutFrame] is growing in the same direction as the parent]),
-  /// or in a [Flex] + [Flexible] widget if needed (when the child [AutoLayoutFrame] is growing in the perpendicular direction as the parent]);
-  /// a [Flex] widget is used for this as a replacement for [Row]/[Column], as it allows to specify the direction dynamically (we simply flip the axis to make sure it's perpendicular).
+  /// When nesting an infinitely growing Widget inside of another,
+  /// the layout crashes with an unbound constraint error.
+  ///
+  /// This would be regularly fixed by simply wrapping the child
+  /// in an [Expanded] widget, but this is not possible because then
+  /// the parent is required to be a [Flex]/[Row]/[Column]/[Wrap] widget,
+  /// which is not always the case when nesting [AutoLayoutFrame]s,
+  /// as there's other layout utilities in the middle
+  /// (e.g. [Padding], see [_buildInnerLayout] and [_buildOuterLayout]
+  /// for reference).
+  ///
+  /// This method takes care of wrapping the child in a [Flexible] widget
+  /// if needed (when the child [AutoLayoutFrame] is growing
+  /// in the same direction as the parent),
+  /// or in a [Flex] + [Flexible] widget if needed
+  /// (when the child [AutoLayoutFrame] is growing
+  /// in the perpendicular direction to the parent);
+  /// a [Flex] widget is used for this as a replacement for [Row]/[Column],
+  /// as it allows to specify the direction dynamically
+  /// (we simply flip the axisto make sure it's perpendicular).
   Widget _layoutChild(Widget child) {
     // If not an AutoLayoutFrame, return as is
-    if (child.runtimeType != AutoLayoutFrame) {
+    if (child is! AutoLayoutFrame) {
       return child;
     }
 
-    // Logger.verbose("detected child frame!");
-    final AutoLayoutFrame childFrame = child as AutoLayoutFrame;
+    // debugPrint("detected child frame!");
+    final AutoLayoutFrame childFrame = child;
     final Axis thisAxis = getSimpleAxis();
     // final Axis otherAxis = other.getSimpleAxis();
 
-    // TODO(kerberjg): perhaps wrap other widgets know to grow infinitely? e.g. ListView, GridView, etc.s
+    // TODO(kerberjg): perhaps wrap other widgets know to grow infinitely? e.g. ListView, GridView, etc.
     // Wrap in [Flexible] if fills container in the same direction
     if (childFrame.isGrowingOnAxis(thisAxis)) {
       child = Flexible(
