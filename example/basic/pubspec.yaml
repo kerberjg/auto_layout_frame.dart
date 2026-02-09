@@ -11,7 +11,7 @@ environment:
 
 # Add regular dependencies here.
 dependencies:
-  dart_package_template:
+  auto_layout_frame:
     path: ../../
 
 dev_dependencies:

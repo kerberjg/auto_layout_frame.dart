@@ -1,129 +1,105 @@
 <div align="center">
 
-# dart_package_template
-GitHub template repository for Dart packages, ready for pub.dev publication.
+# auto_layout_frame
+Flutter implementation of Figma's Auto Layout frames with support for alignment, padding, gap, resizing, and overflow behavior.
 
 ```bash
-dart pub get dart_package_template
+flutter pub add auto_layout_frame
 ```
 
 <!-- Badges -->
 <!-- remember to update these badges when using the template! -->
 
-[![License: MPL 2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](LICENSE)
-[![build](https://github.com/kerberjg/dart_package_template/actions/workflows/package.yaml/badge.svg)](https://github.com/kerberjg/dart_package_template/actions/workflows/package.yaml)
-[![example](https://github.com/kerberjg/dart_package_template/actions/workflows/example.yaml/badge.svg)](https://github.com/kerberjg/dart_package_template/actions/workflows/example.yaml)
-[![stars](https://img.shields.io/github/stars/kerberjg/dart_package_template.svg)](https://github.com/kerberjg/dart_package_template/stargazers)
+[![License: MPL-2.0](https://img.shields.io/badge/License-MPL_2.0-brightgreen.svg)](LICENSE)
+[![build](https://github.com/kerberjg/auto_layout_frame.dart/actions/workflows/package.yaml/badge.svg)](https://github.com/kerberjg/auto_layout_frame.dart/actions/workflows/package.yaml)
+[![example](https://github.com/kerberjg/auto_layout_frame.dart/actions/workflows/example.yaml/badge.svg)](https://github.com/kerberjg/auto_layout_frame.dart/actions/workflows/example.yaml)
+[![stars](https://img.shields.io/github/stars/kerberjg/auto_layout_frame.dart.svg)](https://github.com/kerberjg/auto_layout_frame.dart/stargazers)
 <br/>
-[![pub package](https://img.shields.io/pub/v/dart_package_template?logo=dart)](https://pub.dev/packages/dart_package_template)
-[![pub score](https://img.shields.io/pub/points/dart_package_template?logo=dart)](https://pub.dev/packages/dart_package_template/score)
-[![likes](https://img.shields.io/pub/likes/dart_package_template?logo=dart)](https://pub.dev/packages/dart_package_template/likes)
+[![pub package](https://img.shields.io/pub/v/auto_layout_frame?logo=dart)](https://pub.dev/packages/auto_layout_frame)
+[![pub score](https://img.shields.io/pub/points/auto_layout_frame?logo=dart)](https://pub.dev/packages/auto_layout_frame/score)
+[![likes](https://img.shields.io/pub/likes/auto_layout_frame?logo=dart)](https://pub.dev/packages/auto_layout_frame/likes)
 
 </div>
 
 ### 💙 Use cases
-- 🏝️ **A weekend project**: quickly start a new OSS Dart project with everything set up
-- 📚 **Learning**: understand best practices for Dart package structure, linting, testing, and CI
-- 💻 **Production-ready boilerplate**: complete starting point for a high-quality Dart package
+- 🎨 **Figma-like layouts**: Replicate Figma's Auto Layout behavior in your Flutter apps
+- 📱 **Responsive UI**: Build flexible, responsive layouts that adapt to different screen sizes
+- 🚀 **Rapid prototyping**: Quickly create complex layouts with intuitive, declarative syntax
 
 
 ## ✨ Features
-- Unopinionated! A minimal example focused on compliance with Dart guidelines
-- Ready for immediate package publication to [pub.dev](https://pub.dev/)
-- Pre-configured `pubspec.yaml` with recommended fields
-- Multiple example projects in the `example/` directory
-- Linting setup with `lints` package for code quality, following the [Effective Dart](https://dart.dev/guides/language/effective-dart) style guide
-- (Recommended) [MPL-2.0 License](https://opensource.org/licenses/MPL-2.0) for open source projects
-- Unit tests setup with `test` package
-- GitHub Actions workflows for automated testing/QA jobs on push events and PRs
-
-This repository is also published as a package on [pub.dev](https://pub.dev/packages/dart_package_template) to make sure it's always kept up to date on the most recent best practices 🫶
-
-#### Coming up next:
-- GitHub **Issue/PR templates**
-- **CLI utility** for maintenance/updates (separate repo/package)
+- **🎯 Alignment**: Control child alignment with `alignChildren` and self alignment with `alignSelf`
+- **📏 Padding & Gap**: Set padding around children and gap between them (including auto-spacing with `gap: double.infinity`)
+- **📐 Resizing**: Choose from `fixed`, `hugContents`, or `fillContainer` for horizontal and vertical axes
+- **↔️ Direction**: Layout children horizontally, vertically, or with wrapping
+- **🔄 Overflow handling**: Choose from `none`, `clip`, `visible`, or `scroll` behaviors
+- **🪆 Proper nesting**: Automatically handles nested `AutoLayoutFrame`s with correct constraint handling
 
 ---
 
 ## 🔮 Usage Guide
 
 ### Getting Started
+Add `auto_layout_frame` to your `pubspec.yaml`:
 
-1. **Create a new repository**
-    - Click the "Use this template" button on the GitHub page for this repository.
-    - Fill in the details for your new repository and create it.
-        - **🛑✋ IMPORTANT!** Make sure to name your new repository and package with underscore separators, **`just_like_this`** as required by Dart.
-2. **Clone your new repository**
-    ```bash
-    git clone <your-repo-url>
-    cd <your-repo-name>
-    ```
-3. **Update `pubspec.yaml`**
-    - Change the `name`, `description`, `homepage`, `repository`, and `issue_tracker` fields to match your package
-    - Update the `environment` SDK constraints if necessary
-    - Update the same fields in `example/**/pubspec.yaml`
-4. **Rename the entrypoint file** `lib/dart_package_template.dart` to `lib/<your_package_name>.dart` - this is required by Dart package conventions
-5. **Update `README.md`**
-    - We recommend you keep the sections, titles and the structure of this README as-is
-    - Update the content to reflect your package's purpose, features, and usage
-    - Update the badges at the top to reflect your repository and package details
-6. **Update `LICENSE`**
-    - We recommend the included [`MPL-2.0 License`](https://opensource.org/licenses/MPL-2.0) for open source packages, as it's business-friendly and allows for both open source and proprietary use
-    - If you choose a different license, make sure to update the `LICENSE` file accordingly
+```bash
+flutter pub add auto_layout_frame
+```
 
-### Development & Maintenance
+Then import it in your Dart code:
 
-1. Make sure you have the following enabled in your IDE:
-    - Dart SDK
-    - Dart/Flutter Linting
-    - "Format on Save"
-2. **Write your code!** implement your package functionality in `lib/`, however you like 💙
-    - Make sure there are no format/analysis issues reported by your IDE!
-3. **Update & run tests** to ensure everything is working as expected:
-    ```bash
-    dart test
-    ```
-4. **Commit & push your changes** to your repository. We recommend using a standardized branching strategy (such as [`GitFlow`](https://nvie.com/posts/a-successful-git-branching-model/)) and maintaining a cohesive commit message/history style.
+```dart
+import 'package:auto_layout_frame/auto_layout_frame.dart';
+```
 
-5. **Create a Pull Request** to merge your changes into the `main` branch.
-    - Make sure all **GitHub Actions** checks pass before merging
-    - Once approved, merge the PR into `main`
+### Basic Example
 
-6. **Review & Refine**
-    - Regularly review your codebase for improvements, refactoring, and updates to dependencies
-    - Keep your documentation up to date in `README.md` and `CHANGELOG.md`
+```dart
+AutoLayoutFrame(
+  direction: AutoLayoutDirection.vertical,
+  gap: 16,
+  padding: EdgeInsets.all(20),
+  alignChildren: Alignment.centerLeft,
+  children: [
+    Text('Hello'),
+    Text('World'),
+    Text('Auto Layout!'),
+  ],
+)
+```
 
+### Advanced Example
 
-### Publishing
+```dart
+AutoLayoutFrame(
+  direction: AutoLayoutDirection.horizontal,
+  gap: double.infinity, // Auto-space children
+  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+  alignChildren: Alignment.center,
+  horizontalResizing: AutoLayoutResizing.fillContainer,
+  verticalResizing: AutoLayoutResizing.hugContents,
+  backgroundColor: Colors.blue.shade50,
+  overflow: AutoLayoutOverflowBehavior.scroll,
+  children: [
+    Icon(Icons.star),
+    Text('Featured Item'),
+    Icon(Icons.arrow_forward),
+  ],
+)
+```
 
-1. **Commit the version bump**
-    - Update the version in `pubspec.yaml` according to [Semantic Versioning](https://semver.org/)
-    - Update the `CHANGELOG.md` with the changes made in this version
-        - 🤫 _psst!_ you can use [git log](https://git-scm.com/docs/git-log) command to help you with this, such as `git log --oneline --decorate 1.0.0..HEAD` to see all commits since version 1.0.0
-    - Name the commit something like `Bump version to x.y.z`
-    - Create a git tag for the new version: `git tag x.y.z`
+### Resizing Behaviors
 
-2. **Publish to pub.dev**
-    - **IMPORTANT:** Make sure you have an account on [pub.dev](https://pub.dev/) and are logged in via the command line using `dart pub login`
-    - First run `dart pub publish --dry-run` to ensure everything is ready for publication
-    - If the above command reports any issues, address them before proceeding
-    - When ready, run `dart pub publish` to publish your package
+- **`AutoLayoutResizing.fixed`**: Fixed size (requires explicit `width`/`height`)
+- **`AutoLayoutResizing.hugContents`**: Shrink-wrap to fit children
+- **`AutoLayoutResizing.fillContainer`**: Expand to fill available space
 
-### Next steps
+### Overflow Behaviors
 
-- Share your work! Announce your package on social media, relevant forums, and communities to gain users and feedback.
-- Invite collaborators! Open your repository to contributions from others to help improve and maintain the package.
-- Keep learning and improving! Regularly update your package with new features, bug fixes, and improvements based on user feedback.
-
----
-
-**That's it! 🥳 Congratulations on starting the journey of creating your Dart package!** 🎉🤗💙
-
-The Dart/Flutter community is made better by contributions like yours. Make sure to reach out and engage with others in the community, share experiences with other devs,  and keep building amazing things!
-
->
-> Our community is warm and welcoming, make sure to act within that spirit! 💖
-> 
+- **`AutoLayoutOverflowBehavior.none`**: Allow overflow errors (default)
+- **`AutoLayoutOverflowBehavior.clip`**: Clip overflow to frame bounds
+- **`AutoLayoutOverflowBehavior.visible`**: Allow overflow to be visible
+- **`AutoLayoutOverflowBehavior.scroll`**: Make frame scrollable 
 
 ---
 
@@ -149,7 +125,7 @@ Contributions are welcome! Please open an issue or submit a pull request for any
 This package is developed/maintained by the following rockstars!
 Your contributions make a difference! 💖
 
-![contributors badge](https://readme-contribs.as93.net/contributors/kerberjg/dart_package_template?textColor=888888)
+![contributors badge](https://readme-contribs.as93.net/contributors/kerberjg/auto_layout_frame.dart?textColor=888888)
 
 ### Sponsors 🫶✨🥳
 

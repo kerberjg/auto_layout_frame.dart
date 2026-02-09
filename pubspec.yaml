@@ -1,4 +1,4 @@
-name: dart_package_template
+name: auto_layout_frame
 description: A pub.dev-ready Dart package template with recommended settings.
 version: 0.1.0
 
@@ -11,6 +11,8 @@ environment:
   sdk: '>=3.0.0 <4.0.0'
 
 dependencies:
+  flutter:
+    sdk: flutter
 
 dev_dependencies:
   lints: ^6.0.0
