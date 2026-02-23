@@ -163,46 +163,37 @@ class AutoLayoutFrame extends StatelessWidget {
     return LayoutBuilder(builder: (context, constraints) {
       // debugPrint('Frame constraints:${constraints}');
 
-      final Widget child = Stack(
-        fit: StackFit.passthrough,
-        children: [
-          // Background color
-          if (backgroundColor != null)
-            IgnorePointer(
-              // NOTE: this is required because ColoredBox is [HitTestBehavior.opaque]
-              ignoring: true,
-              child: ColoredBox(
-                color: backgroundColor!,
-              ),
-            ),
-          _buildInnerLayout(context),
-        ],
-      );
+      // Wrap in ColoredBox if [backgroundColor] is specified
+      final Widget child = backgroundColor != null
+          ? ColoredBox(
+              color: backgroundColor!,
+              child: _buildInnerLayout(context),
+            )
+          : _buildInnerLayout(context);
 
       final Widget outerLayout = SizedBox(
-        width: switch (horizontalResizing) {
-          AutoLayoutResizing.fillContainer => constraints.maxWidth,
-          AutoLayoutResizing.hugContents => null,
-          AutoLayoutResizing.fixed => width,
-        },
-        height: switch (verticalResizing) {
-          AutoLayoutResizing.fillContainer => constraints.maxHeight,
-          AutoLayoutResizing.hugContents => null,
-          AutoLayoutResizing.fixed => height,
-        },
-        child: child,
-      );
+          width: switch (horizontalResizing) {
+            AutoLayoutResizing.fillContainer => constraints.maxWidth,
+            AutoLayoutResizing.hugContents => null,
+            AutoLayoutResizing.fixed => width,
+          },
+          height: switch (verticalResizing) {
+            AutoLayoutResizing.fillContainer => constraints.maxHeight,
+            AutoLayoutResizing.hugContents => null,
+            AutoLayoutResizing.fixed => height,
+          },
+          child: child);
 
       // If not nested in another [AutoLayoutFrame], wrap in Align to make sure the size is respected
       // (source: https://stackoverflow.com/questions/54717748/why-flutter-container-does-not-respects-its-width-and-height-constraints-when-it)
-      if (!_isNested.value!) {
-        return Align(
-          alignment: alignSelf,
-          child: outerLayout,
-        );
-      } else {
-        return outerLayout;
-      }
+      // if (!(_isNested.value ?? false)) {
+      //   return Align(
+      //     alignment: alignSelf,
+      //     child: outerLayout,
+      //   );
+      // }
+      //
+      return outerLayout;
     });
   }
 
