@@ -24,10 +24,10 @@ enum AutoLayoutResizing {
   /// by the [width] and [height] properties.
   fixed,
 
-  /// same as [ListView.shrinkWrap]
+  /// Shrinks the frame to fit its children as tightly as possible.
   hugContents,
 
-  /// same as [Expanded]
+  /// Expands the frame to fill the available space in its parent.
   fillContainer,
 }
 
