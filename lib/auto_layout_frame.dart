@@ -207,68 +207,67 @@ class AutoLayoutFrame extends StatelessWidget {
   Widget _buildInnerLayout(final BuildContext context) {
     final double spacing = gap != double.infinity ? gap ?? 0 : 0;
 
-    Widget child = direction == AutoLayoutDirection.vertical
-        ? Column(
-            spacing: spacing,
-            // defined by this.alignment.y
-            mainAxisAlignment: gap == double.infinity
-                ? MainAxisAlignment.spaceBetween
-                : alignChildren.y == 0
-                    ? MainAxisAlignment.center
-                    : alignChildren.y == 1
-                        ? MainAxisAlignment.end
-                        : MainAxisAlignment.start,
-            // defined by this.alignment.x
-            crossAxisAlignment: alignChildren.x == 0
-                ? CrossAxisAlignment.center
-                : alignChildren.x == 1
-                    ? CrossAxisAlignment.end
-                    : CrossAxisAlignment.start,
-            mainAxisSize: verticalResizing == AutoLayoutResizing.fillContainer
-                ? MainAxisSize.max
-                : MainAxisSize.min,
-            children: _buildChildren(),
-          )
-        : direction == AutoLayoutDirection.horizontal
-            ? Row(
-                spacing: spacing,
-                // defined by this.alignment.x
-                mainAxisAlignment: gap == double.infinity
-                    ? MainAxisAlignment.spaceBetween
-                    : alignChildren.x == 0
-                        ? MainAxisAlignment.center
-                        : alignChildren.x == 1
-                            ? MainAxisAlignment.end
-                            : MainAxisAlignment.start,
-                // defined by this.alignment.y
-                crossAxisAlignment: alignChildren.y == 0
-                    ? CrossAxisAlignment.center
-                    : alignChildren.y == 1
-                        ? CrossAxisAlignment.end
-                        : CrossAxisAlignment.start,
-                mainAxisSize:
-                    horizontalResizing == AutoLayoutResizing.fillContainer
-                        ? MainAxisSize.max
-                        : MainAxisSize.min,
-                children: _buildChildren(),
-              )
-            : Wrap(
-                spacing: spacing,
-                runSpacing: spacing,
-                alignment: gap == double.infinity
-                    ? WrapAlignment.spaceBetween
-                    : alignChildren.x == 0
-                        ? WrapAlignment.center
-                        : alignChildren.x == 1
-                            ? WrapAlignment.end
-                            : WrapAlignment.start,
-                crossAxisAlignment: alignChildren.y == 0
-                    ? WrapCrossAlignment.center
-                    : alignChildren.y == 1
-                        ? WrapCrossAlignment.end
-                        : WrapCrossAlignment.start,
-                children: _buildChildren(),
-              );
+    Widget child = switch (direction) {
+      AutoLayoutDirection.vertical => Column(
+          spacing: spacing,
+          // defined by this.alignment.y
+          mainAxisAlignment: gap == double.infinity
+              ? MainAxisAlignment.spaceBetween
+              : alignChildren.y == 0
+                  ? MainAxisAlignment.center
+                  : alignChildren.y == 1
+                      ? MainAxisAlignment.end
+                      : MainAxisAlignment.start,
+          // defined by this.alignment.x
+          crossAxisAlignment: alignChildren.x == 0
+              ? CrossAxisAlignment.center
+              : alignChildren.x == 1
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
+          mainAxisSize: verticalResizing == AutoLayoutResizing.fillContainer
+              ? MainAxisSize.max
+              : MainAxisSize.min,
+          children: _buildChildren(),
+        ),
+      AutoLayoutDirection.horizontal => Row(
+          spacing: spacing,
+          // defined by this.alignment.x
+          mainAxisAlignment: gap == double.infinity
+              ? MainAxisAlignment.spaceBetween
+              : alignChildren.x == 0
+                  ? MainAxisAlignment.center
+                  : alignChildren.x == 1
+                      ? MainAxisAlignment.end
+                      : MainAxisAlignment.start,
+          // defined by this.alignment.y
+          crossAxisAlignment: alignChildren.y == 0
+              ? CrossAxisAlignment.center
+              : alignChildren.y == 1
+                  ? CrossAxisAlignment.end
+                  : CrossAxisAlignment.start,
+          mainAxisSize: horizontalResizing == AutoLayoutResizing.fillContainer
+              ? MainAxisSize.max
+              : MainAxisSize.min,
+          children: _buildChildren(),
+        ),
+      AutoLayoutDirection.wrap => Wrap(
+          spacing: spacing,
+          runSpacing: spacing,
+          alignment: gap == double.infinity
+              ? WrapAlignment.spaceBetween
+              : alignChildren.x == 0
+                  ? WrapAlignment.center
+                  : alignChildren.x == 1
+                      ? WrapAlignment.end
+                      : WrapAlignment.start,
+          runAlignment: alignChildren.y == 0
+              ? WrapAlignment.center
+              : alignChildren.y == 1
+                  ? WrapAlignment.end
+                  : WrapAlignment.start,
+          children: _buildChildren(),
+        ),
+    };
 
     // Wrap in overflow behavior
     switch (overflow) {
