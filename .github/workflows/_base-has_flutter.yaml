@@ -30,12 +30,8 @@ jobs:
             exit 0
           fi
 
-          if awk '
-            $1 == "environment:" { in_env=1 }
-            in_env && $1 == "sdk:" { in_env=0 }
-            in_env && $1 == "flutter:" { found=1 }
-            END { exit(found?0:1) }
-          ' "$PUBSPEC"; then
+          # if has a "flutter:" anywhere in the file
+          if grep -q "flutter:" "$PUBSPEC"; then
             echo "Flutter SDK detected."
             echo "is_flutter=1" >> "$GITHUB_OUTPUT"
           else

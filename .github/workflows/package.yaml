@@ -12,7 +12,7 @@ on:
     paths:
       - '**.dart'
       - './*.yaml'
-      - .github/workflows/_base-dart.yaml
+      - .github/workflows/_base*.yaml
       - .github/workflows/package.yaml
   release:
     types: [published]

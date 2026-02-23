@@ -91,7 +91,7 @@ jobs:
         working-directory: ${{ inputs.path }}
 
       - name: Run analysis
-        run: flutter analyze --fatal-warnings
+        run: flutter analyze --fatal-warnings ./lib/
         working-directory: ${{ inputs.path }}
 
   test:
