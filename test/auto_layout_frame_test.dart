@@ -1,6 +1,11 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:auto_layout_frame/auto_layout_frame.dart';
+
+const kColorRed = Color(0xFFFF0000);
+const kColorBlue = Color(0xFF0000FF);
+const kColorGreen = Color(0xFF00FF00);
+const kColorPurple = Color(0xFF800080);
 
 void main() {
   group('AutoLayoutFrame', () {
@@ -51,20 +56,21 @@ void main() {
     group('Layout Direction', () {
       testWidgets('renders in vertical direction', (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-              home: Scaffold(
-            body: Center(
-              child: AutoLayoutFrame(
-                direction: AutoLayoutDirection.vertical,
-                horizontalResizing: AutoLayoutResizing.hugContents,
-                verticalResizing: AutoLayoutResizing.hugContents,
-                children: [
-                  Container(width: 50, height: 50, color: Colors.red),
-                  Container(width: 50, height: 50, color: Colors.blue),
-                ],
-              ),
-            ),
-          )),
+          WidgetsApp(
+              color: Color(0xFFFFFFFF),
+              builder: (context, child) => Center(
+                    child: Center(
+                      child: AutoLayoutFrame(
+                        direction: AutoLayoutDirection.vertical,
+                        horizontalResizing: AutoLayoutResizing.hugContents,
+                        verticalResizing: AutoLayoutResizing.hugContents,
+                        children: [
+                          Container(width: 50, height: 50, color: kColorRed),
+                          Container(width: 50, height: 50, color: kColorBlue),
+                        ],
+                      ),
+                    ),
+                  )),
         );
 
         // check size of widget on screen to confirm it layouts correctly
@@ -75,16 +81,17 @@ void main() {
       testWidgets('renders in horizontal direction',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-                body: Center(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+                child: Center(
               child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.horizontal,
                 horizontalResizing: AutoLayoutResizing.hugContents,
                 verticalResizing: AutoLayoutResizing.hugContents,
                 children: [
-                  Container(width: 50, height: 50, color: Colors.red),
-                  Container(width: 50, height: 50, color: Colors.blue),
+                  Container(width: 50, height: 50, color: kColorRed),
+                  Container(width: 50, height: 50, color: kColorBlue),
                 ],
               ),
             )),
@@ -98,13 +105,14 @@ void main() {
 
       testWidgets('renders in wrap direction', (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.wrap,
                 children: [
-                  Container(width: 100, height: 100, color: Colors.red),
-                  Container(width: 100, height: 100, color: Colors.blue),
+                  Container(width: 100, height: 100, color: kColorRed),
+                  Container(width: 100, height: 100, color: kColorBlue),
                 ],
               ),
             ),
@@ -122,15 +130,16 @@ void main() {
         const double testHeight = 150;
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 width: testWidth,
                 height: testHeight,
                 horizontalResizing: AutoLayoutResizing.fixed,
                 verticalResizing: AutoLayoutResizing.fixed,
                 children: [
-                  Container(color: Colors.red),
+                  Container(color: kColorRed),
                 ],
               ),
             ),
@@ -144,14 +153,15 @@ void main() {
 
       testWidgets('hugContents sizes to children', (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: Center(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: Center(
                 child: AutoLayoutFrame(
                   horizontalResizing: AutoLayoutResizing.hugContents,
                   verticalResizing: AutoLayoutResizing.hugContents,
                   children: [
-                    Container(width: 100, height: 50, color: Colors.red),
+                    Container(width: 100, height: 50, color: kColorRed),
                   ],
                 ),
               ),
@@ -167,20 +177,21 @@ void main() {
       testWidgets('fillContainer fills available space',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 horizontalResizing: AutoLayoutResizing.fillContainer,
                 verticalResizing: AutoLayoutResizing.fillContainer,
                 children: [
-                  Container(color: Colors.red, width: 100, height: 100),
+                  Container(color: kColorRed, width: 100, height: 100),
                 ],
               ),
             ),
           ),
         );
 
-        final Size screenSize = tester.getSize(find.byType(Scaffold));
+        final Size screenSize = tester.getSize(find.byType(Center));
         final Size frameSize = tester.getSize(find.byType(AutoLayoutFrame));
         expect(screenSize, equals(frameSize));
       });
@@ -188,37 +199,39 @@ void main() {
 
     group('Overflow Behavior', () {
       testWidgets('none allows overflow errors', (WidgetTester tester) async {
-        await tester.pumpWidget(MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
+        await tester.pumpWidget(WidgetsApp(
+          color: Color(0xFFFFFFFF),
+          builder: (context, child) => Center(
+            child: SizedBox(
               width: 100,
               height: 50,
               child: AutoLayoutFrame(
                 overflow: AutoLayoutOverflowBehavior.none,
                 children: [
-                  Container(width: 100, height: 100, color: Colors.red),
+                  Container(width: 100, height: 100, color: kColorRed),
                 ],
               ),
             ),
           ),
         ));
 
-        // expwect overflow error to be thrown when rendering
+        // expect overflow error to be thrown when rendering
         final FlutterError error = tester.takeException() as FlutterError;
         expect(error.toString(), contains('A RenderFlex overflowed by'));
       });
 
       testWidgets('clip reduces size', (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: SizedBox(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: SizedBox(
                 width: 100,
                 height: 50,
                 child: AutoLayoutFrame(
                   overflow: AutoLayoutOverflowBehavior.clip,
                   children: [
-                    Container(width: 100, height: 100, color: Colors.red),
+                    Container(width: 100, height: 100, color: kColorRed),
                   ],
                 ),
               ),
@@ -237,10 +250,10 @@ void main() {
         const Size clipSize = Size(50, 200);
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              // body: Expanded(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.horizontal,
                 overflow: AutoLayoutOverflowBehavior.clip,
                 horizontalResizing: AutoLayoutResizing.fixed,
@@ -250,10 +263,9 @@ void main() {
                   Container(
                       width: childSize.width,
                       height: childSize.height,
-                      color: Colors.red),
+                      color: kColorRed),
                 ],
               ),
-              // ),
             ),
           ),
         );
@@ -269,9 +281,10 @@ void main() {
         const Size frameSize = Size(50, 200);
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.horizontal,
                 overflow: AutoLayoutOverflowBehavior.visible,
                 horizontalResizing: AutoLayoutResizing.fixed,
@@ -281,7 +294,7 @@ void main() {
                   Container(
                       width: childSize.width,
                       height: childSize.height,
-                      color: Colors.red),
+                      color: kColorRed),
                 ],
               ),
             ),
@@ -295,15 +308,16 @@ void main() {
 
       testWidgets('scroll wraps in SingleChildScrollView',
           (WidgetTester tester) async {
-        await tester.pumpWidget(MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
+        await tester.pumpWidget(WidgetsApp(
+          color: Color(0xFFFFFFFF),
+          builder: (context, child) => Center(
+            child: SizedBox(
               width: 100,
               height: 50,
               child: AutoLayoutFrame(
                 overflow: AutoLayoutOverflowBehavior.scroll,
                 children: [
-                  Container(width: 100, height: 100, color: Colors.red),
+                  Container(width: 100, height: 100, color: kColorRed),
                 ],
               ),
             ),
@@ -324,9 +338,10 @@ void main() {
       });
 
       testWidgets('visible wraps in OverflowBox', (WidgetTester tester) async {
-        await tester.pumpWidget(MaterialApp(
-          home: Scaffold(
-            body: SizedBox(
+        await tester.pumpWidget(WidgetsApp(
+          color: Color(0xFFFFFFFF),
+          builder: (context, child) => Center(
+            child: SizedBox(
               width: 100,
               height: 50,
               child: AutoLayoutFrame(
@@ -334,7 +349,7 @@ void main() {
                 direction: AutoLayoutDirection.vertical,
                 gap: 0,
                 children: [
-                  Container(width: 100, height: 100, color: Colors.red),
+                  Container(width: 100, height: 100, color: kColorRed),
                 ],
               ),
             ),
@@ -360,12 +375,13 @@ void main() {
         const EdgeInsets testPadding = EdgeInsets.all(16);
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 padding: testPadding,
                 children: [
-                  Container(width: 100, height: 100, color: Colors.red),
+                  Container(width: 100, height: 100, color: kColorRed),
                 ],
               ),
             ),
@@ -382,14 +398,15 @@ void main() {
         const double testGap = 8;
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.vertical,
                 gap: testGap,
                 children: [
-                  Container(width: 100, height: 50, color: Colors.red),
-                  Container(width: 100, height: 50, color: Colors.blue),
+                  Container(width: 100, height: 50, color: kColorRed),
+                  Container(width: 100, height: 50, color: kColorBlue),
                 ],
               ),
             ),
@@ -406,14 +423,15 @@ void main() {
         const double testGap = 8;
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.horizontal,
                 gap: testGap,
                 children: [
-                  Container(width: 50, height: 100, color: Colors.red),
-                  Container(width: 50, height: 100, color: Colors.blue),
+                  Container(width: 50, height: 100, color: kColorRed),
+                  Container(width: 50, height: 100, color: kColorBlue),
                 ],
               ),
             ),
@@ -427,14 +445,15 @@ void main() {
       testWidgets('gap of infinity uses spaceBetween alignment',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.vertical,
                 gap: double.infinity,
                 children: [
-                  Container(width: 100, height: 50, color: Colors.red),
-                  Container(width: 100, height: 50, color: Colors.blue),
+                  Container(width: 100, height: 50, color: kColorRed),
+                  Container(width: 100, height: 50, color: kColorBlue),
                 ],
               ),
             ),
@@ -451,13 +470,14 @@ void main() {
       testWidgets('alignChildren centers content by default',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 alignChildren: Alignment.center,
                 direction: AutoLayoutDirection.vertical,
                 children: [
-                  Container(width: 100, height: 50, color: Colors.red),
+                  Container(width: 100, height: 50, color: kColorRed),
                 ],
               ),
             ),
@@ -473,13 +493,14 @@ void main() {
       testWidgets('alignChildren.start aligns to start',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 alignChildren: Alignment.topLeft,
                 direction: AutoLayoutDirection.vertical,
                 children: [
-                  Container(width: 100, height: 50, color: Colors.red),
+                  Container(width: 100, height: 50, color: kColorRed),
                 ],
               ),
             ),
@@ -495,13 +516,14 @@ void main() {
       testWidgets('alignChildren.end aligns to end',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 alignChildren: Alignment.bottomRight,
                 direction: AutoLayoutDirection.vertical,
                 children: [
-                  Container(width: 100, height: 50, color: Colors.red),
+                  Container(width: 100, height: 50, color: kColorRed),
                 ],
               ),
             ),
@@ -517,12 +539,13 @@ void main() {
       testWidgets('alignSelf affects frame alignment in parent',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 alignSelf: Alignment.bottomRight,
                 children: [
-                  Container(width: 100, height: 100, color: Colors.red),
+                  Container(width: 100, height: 100, color: kColorRed),
                 ],
               ),
             ),
@@ -535,15 +558,16 @@ void main() {
 
     group('Background Color', () {
       testWidgets('applies background color', (WidgetTester tester) async {
-        const Color testColor = Colors.purple;
+        const Color testColor = Color.fromARGB(255, 182, 40, 207);
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 backgroundColor: testColor,
                 children: [
-                  Container(width: 100, height: 100, color: Colors.red),
+                  Container(width: 100, height: 100, color: kColorRed),
                 ],
               ),
             ),
@@ -559,16 +583,16 @@ void main() {
         bool wasTapped = false;
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
-                backgroundColor: Colors.purple,
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
+                backgroundColor: kColorPurple,
                 children: [
                   GestureDetector(
                     key: const Key('tappable-child'),
                     onTap: () => wasTapped = true,
-                    child:
-                        Container(width: 100, height: 100, color: Colors.red),
+                    child: Container(width: 100, height: 100, color: kColorRed),
                   ),
                 ],
               ),
@@ -586,16 +610,17 @@ void main() {
           'handles nested AutoLayoutFrames in a vertical layout (perpendicular child)',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.vertical,
                 children: [
                   AutoLayoutFrame(
                     direction: AutoLayoutDirection.horizontal,
                     children: [
-                      Container(width: 50, height: 100, color: Colors.red),
-                      Container(width: 50, height: 100, color: Colors.blue),
+                      Container(width: 50, height: 100, color: kColorRed),
+                      Container(width: 50, height: 100, color: kColorBlue),
                     ],
                   ),
                 ],
@@ -611,16 +636,17 @@ void main() {
           'handles nested AutoLayoutFrames in a vertical layout (parallel child)',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.vertical,
                 children: [
                   AutoLayoutFrame(
                     direction: AutoLayoutDirection.vertical,
                     children: [
-                      Container(width: 100, height: 50, color: Colors.red),
-                      Container(width: 100, height: 50, color: Colors.blue),
+                      Container(width: 100, height: 50, color: kColorRed),
+                      Container(width: 100, height: 50, color: kColorBlue),
                     ],
                   ),
                 ],
@@ -636,16 +662,17 @@ void main() {
           'handles nested AutoLayoutFrames in a horizontal layout (perpendicular child)',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.horizontal,
                 children: [
                   AutoLayoutFrame(
                     direction: AutoLayoutDirection.vertical,
                     children: [
-                      Container(width: 100, height: 50, color: Colors.red),
-                      Container(width: 100, height: 50, color: Colors.blue),
+                      Container(width: 100, height: 50, color: kColorRed),
+                      Container(width: 100, height: 50, color: kColorBlue),
                     ],
                   ),
                 ],
@@ -661,16 +688,17 @@ void main() {
           'handles nested AutoLayoutFrames in a horizontal layout (parallel child)',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.horizontal,
                 children: [
                   AutoLayoutFrame(
                     direction: AutoLayoutDirection.horizontal,
                     children: [
-                      Container(width: 50, height: 100, color: Colors.red),
-                      Container(width: 50, height: 100, color: Colors.blue),
+                      Container(width: 50, height: 100, color: kColorRed),
+                      Container(width: 50, height: 100, color: kColorBlue),
                     ],
                   ),
                 ],
@@ -685,9 +713,10 @@ void main() {
       testWidgets('wraps nested frame in Flexible when growing on same axis',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.vertical,
                 verticalResizing: AutoLayoutResizing.fillContainer,
                 children: [
@@ -695,7 +724,7 @@ void main() {
                     direction: AutoLayoutDirection.vertical,
                     verticalResizing: AutoLayoutResizing.fillContainer,
                     children: [
-                      Container(color: Colors.red),
+                      Container(color: kColorRed),
                     ],
                   ),
                 ],
@@ -711,9 +740,10 @@ void main() {
         const Size expected = Size(100, 50);
 
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.vertical,
                 verticalResizing: AutoLayoutResizing.hugContents,
                 horizontalResizing: AutoLayoutResizing.hugContents,
@@ -726,7 +756,7 @@ void main() {
                       Container(
                           width: expected.width,
                           height: expected.height,
-                          color: Colors.red),
+                          color: kColorRed),
                     ],
                   ),
                 ],
@@ -744,13 +774,14 @@ void main() {
     group('Children Rendering', () {
       testWidgets('renders all children', (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 children: [
-                  Container(width: 100, height: 50, color: Colors.red),
-                  Container(width: 100, height: 50, color: Colors.blue),
-                  Container(width: 100, height: 50, color: Colors.green),
+                  Container(width: 100, height: 50, color: kColorRed),
+                  Container(width: 100, height: 50, color: kColorBlue),
+                  Container(width: 100, height: 50, color: kColorGreen),
                 ],
               ),
             ),
@@ -762,9 +793,10 @@ void main() {
 
       testWidgets('renders empty children list', (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 children: [],
               ),
             ),
@@ -779,13 +811,14 @@ void main() {
       testWidgets('scroll direction is vertical for vertical layout',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.vertical,
                 overflow: AutoLayoutOverflowBehavior.scroll,
                 children: [
-                  Container(width: 100, height: 500, color: Colors.red),
+                  Container(width: 100, height: 500, color: kColorRed),
                 ],
               ),
             ),
@@ -803,13 +836,14 @@ void main() {
       testWidgets('scroll direction is horizontal for horizontal layout',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.horizontal,
                 overflow: AutoLayoutOverflowBehavior.scroll,
                 children: [
-                  Container(width: 500, height: 100, color: Colors.red),
+                  Container(width: 500, height: 100, color: kColorRed),
                 ],
               ),
             ),
@@ -829,13 +863,14 @@ void main() {
       testWidgets('uses MainAxisSize.max for fillContainer',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.vertical,
                 verticalResizing: AutoLayoutResizing.fillContainer,
                 children: [
-                  Container(width: 100, height: 50, color: Colors.red),
+                  Container(width: 100, height: 50, color: kColorRed),
                 ],
               ),
             ),
@@ -850,13 +885,14 @@ void main() {
       testWidgets('uses MainAxisSize.min for non-fillContainer',
           (WidgetTester tester) async {
         await tester.pumpWidget(
-          MaterialApp(
-            home: Scaffold(
-              body: AutoLayoutFrame(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
                 direction: AutoLayoutDirection.vertical,
                 verticalResizing: AutoLayoutResizing.hugContents,
                 children: [
-                  Container(width: 100, height: 50, color: Colors.red),
+                  Container(width: 100, height: 50, color: kColorRed),
                 ],
               ),
             ),
