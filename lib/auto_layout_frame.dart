@@ -2,6 +2,7 @@ library;
 
 // ignore_for_file: prefer_expression_function_bodies, unnecessary_parenthesis
 
+import 'package:flutter/rendering.dart';
 import 'package:flutter/widgets.dart';
 
 /// Sets the direction to layout the children in.
@@ -140,12 +141,6 @@ class AutoLayoutFrame extends StatelessWidget {
     assert(
         !(this.verticalResizing != AutoLayoutResizing.fixed && height != null),
         "height must not be specified when verticalResizing is not fixed");
-    assert(
-      !(overflow == AutoLayoutOverflowBehavior.visible &&
-          (horizontalResizing == AutoLayoutResizing.hugContents ||
-              verticalResizing == AutoLayoutResizing.hugContents)),
-      "Cannot use hugContents resizing when overflow is visible",
-    );
   }
 
   @override
@@ -275,6 +270,7 @@ class AutoLayoutFrame extends StatelessWidget {
             alignment: alignChildren,
             maxWidth: double.infinity,
             maxHeight: double.infinity,
+            fit: OverflowBoxFit.deferToChild,
             child: child,
           ),
         );
@@ -293,6 +289,7 @@ class AutoLayoutFrame extends StatelessWidget {
           alignment: alignChildren,
           maxWidth: double.infinity,
           maxHeight: double.infinity,
+          fit: OverflowBoxFit.deferToChild,
           child: child,
         );
         break;
@@ -350,7 +347,7 @@ class AutoLayoutFrame extends StatelessWidget {
     final Axis thisAxis = getSimpleAxis();
     // final Axis otherAxis = other.getSimpleAxis();
 
-    // TODO(kerberjg): perhaps wrap other widgets know to grow infinitely? e.g. ListView, GridView, etc.
+    // TODO(kerberjg): perhaps wrap other widgets known to grow infinitely? e.g. ListView, GridView, etc.
     // Wrap in [Flexible] if fills container in the same direction
     if (childFrame.isGrowingOnAxis(thisAxis)) {
       child = Flexible(

@@ -283,16 +283,6 @@ class _MyHomePageState extends State<MyHomePage> {
                                     value: v.$3,
                                     tooltip: v.$1,
                                     icon: Icon(v.$2, size: 16),
-                                    enabled:
-                                        !(v.$3 ==
-                                                AutoLayoutOverflowBehavior
-                                                    .visible &&
-                                            (horizontalResizing ==
-                                                    AutoLayoutResizing
-                                                        .hugContents ||
-                                                verticalResizing ==
-                                                    AutoLayoutResizing
-                                                        .hugContents)),
                                   ),
                                 )
                                 .toList(),
