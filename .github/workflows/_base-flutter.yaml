@@ -17,7 +17,7 @@ jobs:
   check-tests:
     name: "check tests"
     runs-on: ubuntu-latest
-    needs: is-flutter
+    needs: [ is-flutter ]
     if: needs.is-flutter.outputs.is_flutter == '1'
     outputs:
       do_tests: ${{ steps.check-tests.outputs.do_tests }}
@@ -70,7 +70,8 @@ jobs:
       - name: "dart format"
         run: |
           echo "Checking Dart formatting...\nFiles displayed below:"
-          dart format --set-exit-if-changed .
+          dart format -o none --set-exit-if-changed ./lib/
+          if [ -d "${{ inputs.path }}/test" ]; then dart format -o none --set-exit-if-changed ./test/; fi
           echo "No formatting issues found."
         working-directory: ${{ inputs.path }}
 
@@ -113,3 +114,21 @@ jobs:
       - name: Run tests
         run: flutter test --reporter=expanded test/*.dart
         working-directory: ${{ inputs.path }}
+
+  publish:
+    runs-on: ubuntu-latest
+    # Needs dart or flutter job to complete successfully, only skipped if either is failed, but not skipped
+    needs: [test, analyze, format]
+    if: ${{ github.event_name == 'release' && github.event.action == 'published' || github.ref == 'refs/heads/main' }}
+    steps:
+      - uses: actions/checkout@v5
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: stable
+          cache: true
+
+      - name: "Get dependencies"
+        run: flutter pub get
+
+      - name: Publish to pub.dev (dry run)
+        run: flutter pub publish --dry-run

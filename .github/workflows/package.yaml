@@ -38,20 +38,3 @@ jobs:
     uses: ./.github/workflows/_base-flutter.yaml
     with:
       path: '.'
-
-  publish:
-    runs-on: ubuntu-latest
-    # Needs dart or flutter job to complete successfully, only skipped if either is failed, but not skipped
-    needs: [dart, flutter]
-    if: ${{ always() && (needs.dart.result == 'success' || needs.flutter.result == 'success') && (needs.dart.result != 'failure' && needs.flutter.result != 'failure') && (github.event_name == 'release' && github.event.action == 'published' || github.ref == 'refs/heads/main') }}
-    steps:
-      - uses: actions/checkout@v5
-      - uses: dart-lang/setup-dart@v1
-        with:
-          sdk: stable
-
-      - name: "Get dependencies"
-        run: dart pub get
-
-      - name: Publish to pub.dev (dry run)
-        run: dart pub publish --dry-run
