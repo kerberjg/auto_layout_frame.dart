@@ -140,8 +140,12 @@ class AutoLayoutFrame extends StatelessWidget {
     assert(
         !(this.verticalResizing != AutoLayoutResizing.fixed && height != null),
         "height must not be specified when verticalResizing is not fixed");
-    // assert(this.verticalResizing != AutoLayoutResizing.fillContainer, "fillContainer has not been implemented yet");
-    // assert(this.horizontalResizing != AutoLayoutResizing.fillContainer, "fillContainer has not been implemented yet");
+    assert(
+      !(overflow == AutoLayoutOverflowBehavior.visible &&
+          (horizontalResizing == AutoLayoutResizing.hugContents ||
+              verticalResizing == AutoLayoutResizing.hugContents)),
+      "Cannot use hugContents resizing when overflow is visible",
+    );
   }
 
   @override
