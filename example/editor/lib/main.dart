@@ -17,9 +17,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'auto_layout_frame demo',
-      theme: ThemeData(
-        colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink),
-      ),
+      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.pink)),
       home: const MyHomePage(title: 'auto_layout_frame demo'),
     );
   }
@@ -27,9 +25,9 @@ class MyApp extends StatelessWidget {
 
 const double kIconButtonSize = 16;
 
+// ignore: non_constant_identifier_names
 Widget ItemChild(int i) {
-  final MaterialColor borderColor =
-      Colors.primaries[i % Colors.primaries.length];
+  final borderColor = Colors.primaries[i % Colors.primaries.length];
 
   return Container(
     width: 96,
@@ -145,7 +143,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 Container(
                   padding: EdgeInsets.all(16),
                   child: Text(
-                    "Properties",
+                    "Properties", //
                     style: Theme.of(context).textTheme.headlineSmall,
                   ),
                 ),
@@ -156,7 +154,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     children: [
                       // --- Children ---
                       Text(
-                        'Children',
+                        'Children', //
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 8),
@@ -167,15 +165,9 @@ class _MyHomePageState extends State<MyHomePage> {
                             onPressed: children.isEmpty
                                 ? null
                                 : () => setState(() {
-                                      children = children.sublist(
-                                        0,
-                                        children.length - 1,
-                                      );
-                                    }),
-                            child: const Icon(
-                              Icons.remove,
-                              size: kIconButtonSize,
-                            ),
+                                    children = children.sublist(0, children.length - 1);
+                                  }),
+                            child: const Icon(Icons.remove, size: kIconButtonSize),
                           ),
                           const SizedBox(width: 8),
                           SizedBox(
@@ -185,10 +177,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               style: TextStyle(height: 0.9),
                               textAlign: TextAlign.center,
                               // decoration: const InputDecoration(labelText: ''),
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                decimal: false,
-                              ),
+                              keyboardType: const TextInputType.numberWithOptions(decimal: false),
                               onChanged: (s) => setState(() {
                                 final t = s.trim();
                                 final n = int.tryParse(t) ?? 0;
@@ -209,10 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                           const SizedBox(width: 8),
                           ElevatedButton(
                             onPressed: () => setState(() {
-                              children = [
-                                ...children,
-                                ItemChild(children.length),
-                              ];
+                              children = [...children, ItemChild(children.length)];
                             }),
                             child: const Icon(Icons.add, size: kIconButtonSize),
                           ),
@@ -224,43 +210,37 @@ class _MyHomePageState extends State<MyHomePage> {
                       // --- Direction ---
                       // (show as 3 buttons: horizontal, vertical, (wrap))
                       Text(
-                        'Direction',
+                        'Direction', //
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       SegmentedButton(
-                        segments: [
-                          (
-                            'Horizontal',
-                            Icons.horizontal_distribute_rounded,
-                            AutoLayoutDirection.horizontal,
-                          ),
-                          (
-                            'Vertical',
-                            Icons.vertical_distribute_rounded,
-                            AutoLayoutDirection.vertical,
-                          ),
-                          (
-                            'Wrap',
-                            Icons.u_turn_right,
-                            AutoLayoutDirection.wrap,
-                          ),
-                        ]
-                            .map(
-                              (e) => ButtonSegment(
-                                value: e.$3,
-                                tooltip: e.$1,
-                                icon: e.$3 == AutoLayoutDirection.wrap
-                                    ? Transform.rotate(
-                                        angle: 90 * pi / 180,
-                                        child: Icon(
-                                          e.$2,
-                                          size: kIconButtonSize,
-                                        ),
-                                      )
-                                    : Icon(e.$2, size: kIconButtonSize),
-                              ),
-                            )
-                            .toList(),
+                        segments:
+                            [
+                                  (
+                                    'Horizontal',
+                                    Icons.horizontal_distribute_rounded,
+                                    AutoLayoutDirection.horizontal,
+                                  ),
+                                  (
+                                    'Vertical',
+                                    Icons.vertical_distribute_rounded,
+                                    AutoLayoutDirection.vertical,
+                                  ),
+                                  ('Wrap', Icons.u_turn_right, AutoLayoutDirection.wrap),
+                                ]
+                                .map(
+                                  (e) => ButtonSegment(
+                                    value: e.$3,
+                                    tooltip: e.$1,
+                                    icon: e.$3 == AutoLayoutDirection.wrap
+                                        ? Transform.rotate(
+                                            angle: 90 * pi / 180,
+                                            child: Icon(e.$2, size: kIconButtonSize),
+                                          )
+                                        : Icon(e.$2, size: kIconButtonSize),
+                                  ),
+                                )
+                                .toList(),
                         selected: {direction},
                         showSelectedIcon: false,
                         onSelectionChanged: (s) => setState(() {
@@ -271,40 +251,37 @@ class _MyHomePageState extends State<MyHomePage> {
 
                       // --- Overflow ---
                       Text(
-                        'Overflow',
+                        'Overflow', //
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       SegmentedButton(
-                        segments: [
-                          (
-                            'None',
-                            Icons.block_rounded,
-                            AutoLayoutOverflowBehavior.none,
-                          ),
-                          (
-                            'Scroll',
-                            Icons.swap_vert_rounded,
-                            AutoLayoutOverflowBehavior.scroll,
-                          ),
-                          (
-                            'Visible',
-                            Icons.remove_red_eye_rounded,
-                            AutoLayoutOverflowBehavior.visible,
-                          ),
-                          (
-                            'Clip',
-                            Icons.content_cut_rounded,
-                            AutoLayoutOverflowBehavior.clip,
-                          ),
-                        ]
-                            .map(
-                              (v) => ButtonSegment(
-                                value: v.$3,
-                                tooltip: v.$1,
-                                icon: Icon(v.$2, size: kIconButtonSize),
-                              ),
-                            )
-                            .toList(),
+                        segments:
+                            [
+                                  ('None', Icons.block_rounded, AutoLayoutOverflowBehavior.none),
+                                  (
+                                    'Scroll',
+                                    Icons.swap_vert_rounded,
+                                    AutoLayoutOverflowBehavior.scroll,
+                                  ),
+                                  (
+                                    'Visible',
+                                    Icons.remove_red_eye_rounded,
+                                    AutoLayoutOverflowBehavior.visible,
+                                  ),
+                                  (
+                                    'Clip',
+                                    Icons.content_cut_rounded,
+                                    AutoLayoutOverflowBehavior.clip,
+                                  ),
+                                ]
+                                .map(
+                                  (v) => ButtonSegment(
+                                    value: v.$3,
+                                    tooltip: v.$1,
+                                    icon: Icon(v.$2, size: kIconButtonSize),
+                                  ),
+                                )
+                                .toList(),
                         selected: {overflow},
                         showSelectedIcon: false,
                         onSelectionChanged: (s) => setState(() {
@@ -312,22 +289,24 @@ class _MyHomePageState extends State<MyHomePage> {
                         }),
                       ),
                       Text(
-                          switch (overflow) {
-                            AutoLayoutOverflowBehavior.none =>
-                              'Any overflow will result in a \'RenderOverflowError\' (yellow and black stripes in debug mode).',
-                            AutoLayoutOverflowBehavior.scroll =>
-                              'If children overflow the frame, scrollbars will appear to allow scrolling to see the overflowed content.',
-                            AutoLayoutOverflowBehavior.visible =>
-                              'Children that overflow the frame will be visible, visually exceeding the bounds without affecting the rest of the layout.',
-                            AutoLayoutOverflowBehavior.clip =>
-                              'Any overflow will be clipped to the frame\'s bounds and not visible.',
-                          },
-                          style: TextStyle(fontSize: 11)),
+                        //
+                        switch (overflow) {
+                          AutoLayoutOverflowBehavior.none =>
+                            'Any overflow will result in a \'RenderOverflowError\' (yellow and black stripes in debug mode).',
+                          AutoLayoutOverflowBehavior.scroll =>
+                            'If children overflow the frame, scrollbars will appear to allow scrolling to see the overflowed content.',
+                          AutoLayoutOverflowBehavior.visible =>
+                            'Children that overflow the frame will be visible, visually exceeding the bounds without affecting the rest of the layout.',
+                          AutoLayoutOverflowBehavior.clip =>
+                            'Any overflow will be clipped to the frame\'s bounds and not visible.',
+                        },
+                        style: TextStyle(fontSize: 11),
+                      ),
                       const Divider(height: 32),
 
                       // --- Gap ---
                       Text(
-                        'gap',
+                        'gap', //
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Row(
@@ -341,10 +320,7 @@ class _MyHomePageState extends State<MyHomePage> {
                               style: TextStyle(height: 0.9),
                               enabled: gap.isFinite,
                               decoration: const InputDecoration(labelText: ''),
-                              keyboardType:
-                                  const TextInputType.numberWithOptions(
-                                decimal: true,
-                              ),
+                              keyboardType: const TextInputType.numberWithOptions(decimal: true),
                               onChanged: (s) => setState(() {
                                 final t = s.trim();
                                 gap = t.isEmpty ? 0 : double.tryParse(t) ?? 0;
@@ -365,10 +341,7 @@ class _MyHomePageState extends State<MyHomePage> {
                             onSelected: (s) => setState(() {
                               gap = s ? double.infinity : 0;
                             }),
-                            padding: EdgeInsets.symmetric(
-                              horizontal: 4,
-                              vertical: 8,
-                            ),
+                            padding: EdgeInsets.symmetric(horizontal: 4, vertical: 8),
                           ),
                         ],
                       ),
@@ -376,7 +349,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                       // --- Padding ---
                       Text(
-                        'padding',
+                        'padding', //
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 8),
@@ -400,22 +373,14 @@ class _MyHomePageState extends State<MyHomePage> {
                             });
                           }
 
-                          Widget field(
-                            String label,
-                            double value,
-                            void Function(double?) set,
-                          ) {
+                          Widget field(String label, double value, void Function(double?) set) {
                             return SizedBox(
                               width: 100,
                               child: TextFormField(
                                 initialValue: value == 0 ? '' : '$value',
                                 decoration: InputDecoration(labelText: label),
-                                keyboardType:
-                                    const TextInputType.numberWithOptions(
-                                  decimal: true,
-                                ),
-                                onChanged: (s) =>
-                                    set(double.tryParse(s.trim()) ?? 0),
+                                keyboardType: const TextInputType.numberWithOptions(decimal: true),
+                                onChanged: (s) => set(double.tryParse(s.trim()) ?? 0),
                               ),
                             );
                           }
@@ -426,63 +391,34 @@ class _MyHomePageState extends State<MyHomePage> {
                             crossAxisAlignment: WrapCrossAlignment.end,
                             children: [
                               _paddingShowLTRB
-                                  ? field(
-                                      'Left',
-                                      p.left,
-                                      (v) => setPadding(left: v),
-                                    )
+                                  ? field('Left', p.left, (v) => setPadding(left: v))
                                   : field(
                                       'Horizontal',
                                       p.left,
                                       (v) => setPadding(left: v, right: v),
                                     ),
                               _paddingShowLTRB
-                                  ? field(
-                                      'Top',
-                                      p.top,
-                                      (v) => setPadding(top: v),
-                                    )
-                                  : field(
-                                      'Vertical',
-                                      p.top,
-                                      (v) => setPadding(top: v, bottom: v),
-                                    ),
+                                  ? field('Top', p.top, (v) => setPadding(top: v))
+                                  : field('Vertical', p.top, (v) => setPadding(top: v, bottom: v)),
                               SizedBox(height: 0, width: 104),
                               FilterChip(
                                 label: _paddingShowLTRB
-                                    ? const Icon(
-                                        Icons.border_inner_rounded,
-                                        size: kIconButtonSize,
-                                      )
-                                    : const Icon(
-                                        Icons.border_outer_rounded,
-                                        size: kIconButtonSize,
-                                      ),
+                                    ? const Icon(Icons.border_inner_rounded, size: kIconButtonSize)
+                                    : const Icon(Icons.border_outer_rounded, size: kIconButtonSize),
                                 showCheckmark: false,
                                 selected: _paddingShowLTRB,
                                 onSelected: (s) => setState(() {
                                   _paddingShowLTRB = s;
                                 }),
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 2,
-                                  vertical: 12,
-                                ),
+                                padding: EdgeInsets.symmetric(horizontal: 2, vertical: 12),
                               ),
                               // newline
                               // newline
                               _paddingShowLTRB
-                                  ? field(
-                                      'Right',
-                                      p.right,
-                                      (v) => setPadding(right: v),
-                                    )
+                                  ? field('Right', p.right, (v) => setPadding(right: v))
                                   : SizedBox.shrink(),
                               _paddingShowLTRB
-                                  ? field(
-                                      'Bottom',
-                                      p.bottom,
-                                      (v) => setPadding(bottom: v),
-                                    )
+                                  ? field('Bottom', p.bottom, (v) => setPadding(bottom: v))
                                   : SizedBox.shrink(),
                             ],
                           );
@@ -492,7 +428,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
                       // --- Alignment helpers ---
                       Text(
-                        'Alignment',
+                        'Alignment', //
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       Row(
@@ -523,18 +459,12 @@ class _MyHomePageState extends State<MyHomePage> {
                                         ][(y + 1) * 3 + (x + 1)],
                                         size: kIconButtonSize,
                                       ),
-                                      padding: EdgeInsets.symmetric(
-                                        horizontal: 0,
-                                        vertical: 10,
-                                      ),
+                                      padding: EdgeInsets.symmetric(horizontal: 0, vertical: 10),
                                       showCheckmark: false,
-                                      selected: alignChildren ==
-                                          Alignment(x.toDouble(), y.toDouble()),
+                                      selected:
+                                          alignChildren == Alignment(x.toDouble(), y.toDouble()),
                                       onSelected: (_) => setState(() {
-                                        alignChildren = Alignment(
-                                          x.toDouble(),
-                                          y.toDouble(),
-                                        );
+                                        alignChildren = Alignment(x.toDouble(), y.toDouble());
                                       }),
                                     ),
                               ],
@@ -546,21 +476,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
                       // --- Resizing ---
                       Text(
-                        'Resizing',
+                        'Resizing', //
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       DropdownButtonFormField<AutoLayoutResizing>(
                         initialValue: horizontalResizing,
-                        decoration: const InputDecoration(
-                          labelText: 'Horizontal',
-                        ),
+                        decoration: const InputDecoration(labelText: 'Horizontal'),
                         items: AutoLayoutResizing.values
-                            .map(
-                              (v) => DropdownMenuItem(
-                                value: v,
-                                child: Text(v.name),
-                              ),
-                            )
+                            .map((v) => DropdownMenuItem(value: v, child: Text(v.name)))
                             .toList(),
                         onChanged: (v) => setState(() {
                           horizontalResizing = v!;
@@ -576,23 +499,17 @@ class _MyHomePageState extends State<MyHomePage> {
                         child: TextFormField(
                           initialValue: width?.toString() ?? '',
                           decoration: const InputDecoration(labelText: 'Width'),
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           onChanged: (s) {
                             setState(() {
                               final t = s.trim();
                               width = t.isEmpty ? null : double.tryParse(t);
 
-                              if (width != null &&
-                                  horizontalResizing !=
-                                      AutoLayoutResizing.fixed) {
+                              if (width != null && horizontalResizing != AutoLayoutResizing.fixed) {
                                 horizontalResizing = AutoLayoutResizing.fixed;
                               } else if (width == null &&
-                                  horizontalResizing ==
-                                      AutoLayoutResizing.fixed) {
-                                horizontalResizing =
-                                    AutoLayoutResizing.hugContents;
+                                  horizontalResizing == AutoLayoutResizing.fixed) {
+                                horizontalResizing = AutoLayoutResizing.hugContents;
                               }
                             });
                           },
@@ -603,16 +520,9 @@ class _MyHomePageState extends State<MyHomePage> {
 
                       DropdownButtonFormField<AutoLayoutResizing>(
                         initialValue: verticalResizing,
-                        decoration: const InputDecoration(
-                          labelText: 'Vertical',
-                        ),
+                        decoration: const InputDecoration(labelText: 'Vertical'),
                         items: AutoLayoutResizing.values
-                            .map(
-                              (v) => DropdownMenuItem(
-                                value: v,
-                                child: Text(v.name),
-                              ),
-                            )
+                            .map((v) => DropdownMenuItem(value: v, child: Text(v.name)))
                             .toList(),
                         onChanged: (v) => setState(() {
                           verticalResizing = v!;
@@ -627,26 +537,18 @@ class _MyHomePageState extends State<MyHomePage> {
                         visible: verticalResizing == AutoLayoutResizing.fixed,
                         child: TextFormField(
                           initialValue: height?.toString() ?? '',
-                          decoration: const InputDecoration(
-                            labelText: 'Height',
-                          ),
-                          keyboardType: const TextInputType.numberWithOptions(
-                            decimal: true,
-                          ),
+                          decoration: const InputDecoration(labelText: 'Height'),
+                          keyboardType: const TextInputType.numberWithOptions(decimal: true),
                           onChanged: (s) {
                             setState(() {
                               final t = s.trim();
                               height = t.isEmpty ? null : double.tryParse(t);
 
-                              if (height != null &&
-                                  verticalResizing !=
-                                      AutoLayoutResizing.fixed) {
+                              if (height != null && verticalResizing != AutoLayoutResizing.fixed) {
                                 verticalResizing = AutoLayoutResizing.fixed;
                               } else if (height == null &&
-                                  verticalResizing ==
-                                      AutoLayoutResizing.fixed) {
-                                verticalResizing =
-                                    AutoLayoutResizing.hugContents;
+                                  verticalResizing == AutoLayoutResizing.fixed) {
+                                verticalResizing = AutoLayoutResizing.hugContents;
                               }
                             });
                           },
@@ -657,15 +559,14 @@ class _MyHomePageState extends State<MyHomePage> {
                       // --- Background color ---
                       // use FlexColorPicker
                       Text(
-                        'backgroundColor',
+                        'Background Color', //
                         style: Theme.of(context).textTheme.titleMedium,
                       ),
                       const SizedBox(height: 8),
                       ColorPicker(
                         color: backgroundColor ?? Colors.transparent,
                         onColorChanged: (color) => setState(() {
-                          backgroundColor =
-                              color == Colors.transparent ? null : color;
+                          backgroundColor = color == Colors.transparent ? null : color;
                         }),
                         borderRadius: 6,
                         spacing: 4,
