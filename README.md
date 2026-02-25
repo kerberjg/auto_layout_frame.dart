@@ -24,16 +24,23 @@ flutter pub add auto_layout_frame
 ### 💙 Use cases
 - 🎨 **Figma-like layouts**: Replicate Figma's Auto Layout behavior in your Flutter apps
 - 📱 **Responsive UI**: Build flexible, responsive layouts that adapt to different screen sizes
-- 🚀 **Rapid prototyping**: Quickly create complex layouts with intuitive, declarative syntax
+- 🚀 **Rapid prototyping**: Quickly create complex layouts with an intuitive, declarative syntax
+
+<img style="width: 100%;" src="screenshots/editor.gif"/>
 
 
 ## ✨ Features
-- **🎯 Alignment**: Control child alignment with `alignChildren` and self alignment with `alignSelf`
+- **🎯 Alignment**: Control child alignment with `alignChildren`
 - **📏 Padding & Gap**: Set padding around children and gap between them (including auto-spacing with `gap: double.infinity`)
 - **📐 Resizing**: Choose from `fixed`, `hugContents`, or `fillContainer` for horizontal and vertical axes
 - **↔️ Direction**: Layout children horizontally, vertically, or with wrapping
 - **🔄 Overflow handling**: Choose from `none`, `clip`, `visible`, or `scroll` behaviors
 - **🪆 Proper nesting**: Automatically handles nested `AutoLayoutFrame`s with correct constraint handling
+
+#### Coming soon:
+- **📚 More docs/examples**
+- **🧩 More layout options**
+- **⚡ Performance optimizations** 
 
 ---
 
@@ -88,13 +95,17 @@ AutoLayoutFrame(
 )
 ```
 
-### Resizing Behaviors
+### Resizing
+
+**Like Figma**, you can control how the frame resizes on both axes:
 
 - **`AutoLayoutResizing.fixed`**: Fixed size (requires explicit `width`/`height`)
 - **`AutoLayoutResizing.hugContents`**: Shrink-wrap to fit children
 - **`AutoLayoutResizing.fillContainer`**: Expand to fill available space
 
-### Overflow Behaviors
+### Overflow
+
+**New!**: Control how overflow is handled when children exceed frame bounds:
 
 - **`AutoLayoutOverflowBehavior.none`**: Allow overflow errors (default)
 - **`AutoLayoutOverflowBehavior.clip`**: Clip overflow to frame bounds
