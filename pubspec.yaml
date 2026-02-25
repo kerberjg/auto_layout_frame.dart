@@ -1,11 +1,11 @@
 name: auto_layout_frame
-description: A pub.dev-ready Dart package template with recommended settings.
+description: Flutter implementation of Figma's Auto Layout frames with support for alignment, padding, gap, resizing, and overflow behavior.
 version: 0.1.0
 
 license: MPL-2.0
-homepage: https://github.com/kerberjg/dart_package_template
-repository: https://github.com/kerberjg/dart_package_template
-issue_tracker: https://github.com/kerberjg/dart_package_template/issues
+homepage: https://github.com/kerberjg/auto_layout_frame.dart
+repository: https://github.com/kerberjg/auto_layout_frame.dart
+issue_tracker: https://github.com/kerberjg/auto_layout_frame.dart/issues
 
 environment:
   sdk: '>=3.0.0 <4.0.0'
