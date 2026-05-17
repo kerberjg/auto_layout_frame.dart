@@ -6,39 +6,22 @@ on:
     branches:
       - main
       - develop
-      - 'release/**'
+      - "release/**"
     paths:
-      - 'example/**/*.dart'
-      - 'example/**/*.yaml'
-      - .github/workflows/_base*.yaml
+      - "example/**/*.dart"
+      - "example/**/*.yaml"
       - .github/workflows/example.yaml
   release:
     types: [published]
 
 jobs:
-  is-flutter:
-    uses: ./.github/workflows/_base-has_flutter.yaml
-    with:
-      path: '.'
-
-  dart:
-    needs: is-flutter
-    if: needs.is-flutter.outputs.is_flutter == '0'
+  ci:
     strategy:
       matrix:
-        example: [ editor ]
-    name: "${{ matrix.example }}"
-    uses: ./.github/workflows/_base-dart.yaml
-    with:
-      path: "example/${{ matrix.example }}"
-
-  flutter:
-    needs: is-flutter
-    if: needs.is-flutter.outputs.is_flutter == '1'
-    strategy:
-      matrix:
-        example: [ editor ]
-    name: "${{ matrix.example }}"
-    uses: ./.github/workflows/_base-flutter.yaml
+        include:
+          - package: auto_layout_frame
+            example: editor
+    name: "${{ matrix.package }} (${{ matrix.example }})"
+    uses: kerberjg/dart_flutter_ci_experiments/.github/workflows/pipeline.yaml@4224e695167e35d90952e21953b2f933b0f045b0
     with:
       path: "example/${{ matrix.example }}"

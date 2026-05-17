@@ -1,40 +1,23 @@
 name: "package"
 
 on:
-  schedule:
-  - cron: "0 12 * * 3"
   pull_request:
   push:
     branches:
       - main
       - develop
-      - 'release/**'
+      - "release/**"
     paths:
-      - '**.dart'
-      - './*.yaml'
-      - .github/workflows/_base*.yaml
+      - "**.dart"
+      - "./*.yaml"
       - .github/workflows/package.yaml
   release:
     types: [published]
 
-
 # call the base workflow with the package path
 jobs:
-  is-flutter:
-    uses: ./.github/workflows/_base-has_flutter.yaml
+  ci:
+    uses: kerberjg/dart_flutter_ci_experiments/.github/workflows/pipeline.yaml@4224e695167e35d90952e21953b2f933b0f045b0
     with:
-      path: '.'
-
-  dart:
-    needs: is-flutter
-    if: needs.is-flutter.outputs.is_flutter == '0'
-    uses: ./.github/workflows/_base-dart.yaml
-    with:
-      path: '.'
-
-  flutter:
-    needs: is-flutter
-    if: needs.is-flutter.outputs.is_flutter == '1'
-    uses: ./.github/workflows/_base-flutter.yaml
-    with:
-      path: '.'
+      path: "."
+      min-publish-score: 150
