@@ -1,6 +1,8 @@
 name: "package"
 
 on:
+  schedule:
+  - cron: "0 12 * * 3"
   pull_request:
   push:
     branches:
