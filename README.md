@@ -26,7 +26,7 @@ flutter pub add auto_layout_frame
 - 📱 **Responsive UI**: Build flexible, responsive layouts that adapt to different screen sizes
 - 🚀 **Rapid prototyping**: Quickly create complex layouts with an intuitive, declarative syntax
 
-<img style="width: 100%;" src="https://github.com/kerberjg/auto_layout_frame.dart/blob/0.1.1/screenshots/editor.gif?raw=true"/>
+<img style="width: 100%;" src="https://github.com/kerberjg/auto_layout_frame.dart/blob/0.1.2/screenshots/editor.gif?raw=true"/>
 
 
 ## ✨ Features
