@@ -1,4 +1,5 @@
 .github/
 .dart_tool/
 build/
+screenshots/
 *.g.dart
