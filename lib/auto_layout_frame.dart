@@ -103,9 +103,6 @@ class AutoLayoutFrame extends StatelessWidget {
   /// The background color of this frame. Defaults to transparent.
   final Color? backgroundColor;
 
-  /// Whether this frame is nested inside another [AutoLayoutFrame]
-  final ValueNotifier<bool?> _isNested = ValueNotifier(null);
-
   /// Creates an [AutoLayoutFrame] widget.
   AutoLayoutFrame({
     super.key,
@@ -143,18 +140,10 @@ class AutoLayoutFrame extends StatelessWidget {
         "height must not be specified when verticalResizing is not fixed");
   }
 
-  @override
-  Widget build(final BuildContext context) {
-    // Check if nested (unless already checked)
-    _isNested.value ??=
-        context.findAncestorWidgetOfExactType<AutoLayoutFrame>() != null;
-
-    return _buildOuterLayout(context);
-  }
-
   /// Builds the outer layout of the frame,
   /// taking care of resizing behavior and background color.
-  Widget _buildOuterLayout(final BuildContext context) {
+  @override
+  Widget build(final BuildContext context) {
     return LayoutBuilder(builder: (context, constraints) {
       // debugPrint('Frame constraints:${constraints}');
 
@@ -179,15 +168,6 @@ class AutoLayoutFrame extends StatelessWidget {
           },
           child: child);
 
-      // If not nested in another [AutoLayoutFrame], wrap in Align to make sure the size is respected
-      // (source: https://stackoverflow.com/questions/54717748/why-flutter-container-does-not-respects-its-width-and-height-constraints-when-it)
-      // if (!(_isNested.value ?? false)) {
-      //   return Align(
-      //     alignment: alignSelf,
-      //     child: outerLayout,
-      //   );
-      // }
-      //
       return outerLayout;
     });
   }
