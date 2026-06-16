@@ -103,6 +103,17 @@ class AutoLayoutFrame extends StatelessWidget {
   /// The background color of this frame. Defaults to transparent.
   final Color? backgroundColor;
 
+  /// How to clip the frame's content when it exceeds the frame's computed size.
+  ///
+  /// When an ancestor queries intrinsic dimensions (e.g. [IntrinsicHeight],
+  /// [IntrinsicWidth]) the frame is sized to the intrinsic result and any
+  /// child content that overflows that boundary is handled according to this
+  /// value. Defaults to [Clip.hardEdge].
+  ///
+  /// Set to [Clip.none] to allow overflow to be visible (the previous default
+  /// behaviour before this property was introduced).
+  final Clip clipBehavior;
+
   /// Creates an [AutoLayoutFrame] widget.
   AutoLayoutFrame({
     super.key,
@@ -118,6 +129,7 @@ class AutoLayoutFrame extends StatelessWidget {
     final AutoLayoutResizing? verticalResizing,
     this.overflow = AutoLayoutOverflowBehavior.none,
     this.backgroundColor,
+    this.clipBehavior = Clip.hardEdge,
   })  : horizontalResizing = horizontalResizing ??
             (width != null
                 ? AutoLayoutResizing.fixed
@@ -157,6 +169,7 @@ class AutoLayoutFrame extends StatelessWidget {
       verticalResizing: verticalResizing,
       width: width,
       height: height,
+      clipBehavior: clipBehavior,
       child: child,
     );
   }
@@ -365,6 +378,7 @@ class _AutoLayoutFrameSize extends SingleChildRenderObjectWidget {
     required this.verticalResizing,
     required this.width,
     required this.height,
+    required this.clipBehavior,
     super.child,
   });
 
@@ -372,6 +386,7 @@ class _AutoLayoutFrameSize extends SingleChildRenderObjectWidget {
   final AutoLayoutResizing verticalResizing;
   final double? width;
   final double? height;
+  final Clip clipBehavior;
 
   @override
   RenderObject createRenderObject(final BuildContext context) {
@@ -380,6 +395,7 @@ class _AutoLayoutFrameSize extends SingleChildRenderObjectWidget {
       verticalResizing: verticalResizing,
       width: width,
       height: height,
+      clipBehavior: clipBehavior,
     );
   }
 
@@ -390,7 +406,8 @@ class _AutoLayoutFrameSize extends SingleChildRenderObjectWidget {
       ..horizontalResizing = horizontalResizing
       ..verticalResizing = verticalResizing
       ..width = width
-      ..height = height;
+      ..height = height
+      ..clipBehavior = clipBehavior;
   }
 }
 
@@ -400,11 +417,13 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     required AutoLayoutResizing verticalResizing,
     required double? width,
     required double? height,
+    required Clip clipBehavior,
     RenderBox? child,
   })  : _horizontalResizing = horizontalResizing,
         _verticalResizing = verticalResizing,
         _width = width,
         _height = height,
+        _clipBehavior = clipBehavior,
         super(child);
 
   AutoLayoutResizing _horizontalResizing;
@@ -445,6 +464,51 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     }
     _height = value;
     markNeedsLayout();
+  }
+
+  Clip _clipBehavior;
+  Clip get clipBehavior => _clipBehavior;
+  set clipBehavior(final Clip value) {
+    if (_clipBehavior == value) {
+      return;
+    }
+    _clipBehavior = value;
+    markNeedsLayout();
+  }
+
+  final LayerHandle<ClipRectLayer> _clipRectLayer =
+      LayerHandle<ClipRectLayer>();
+
+  @override
+  void dispose() {
+    _clipRectLayer.layer = null;
+    super.dispose();
+  }
+
+  @override
+  Rect? describeApproximatePaintClip(final RenderObject child) {
+    return _clipBehavior == Clip.none ? null : Offset.zero & size;
+  }
+
+  @override
+  void paint(final PaintingContext context, final Offset offset) {
+    if (child == null) {
+      _clipRectLayer.layer = null;
+      return;
+    }
+    if (_clipBehavior != Clip.none) {
+      _clipRectLayer.layer = context.pushClipRect(
+        needsCompositing,
+        offset,
+        Offset.zero & size,
+        super.paint,
+        clipBehavior: _clipBehavior,
+        oldLayer: _clipRectLayer.layer,
+      );
+    } else {
+      _clipRectLayer.layer = null;
+      super.paint(context, offset);
+    }
   }
 
   @override
@@ -521,11 +585,22 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
       constrainExtent: constraints.constrainHeight,
     );
 
+    // For hugContents axes: give the child unbounded space so its inner
+    // Row/Column can reach its natural size without firing a RenderFlex
+    // overflow assertion.  When clipBehavior is Clip.none the caller has
+    // opted out of clipping, so we thread the parent's max through instead
+    // — this preserves the AutoLayoutOverflowBehavior.none contract (overflow
+    // assertions are still thrown in that combination).
+    final double resolvedMaxWidth = tightWidth ??
+        (_clipBehavior != Clip.none ? double.infinity : constraints.maxWidth);
+    final double resolvedMaxHeight = tightHeight ??
+        (_clipBehavior != Clip.none ? double.infinity : constraints.maxHeight);
+
     return BoxConstraints(
-      minWidth: tightWidth ?? constraints.minWidth,
-      maxWidth: tightWidth ?? constraints.maxWidth,
-      minHeight: tightHeight ?? constraints.minHeight,
-      maxHeight: tightHeight ?? constraints.maxHeight,
+      minWidth: tightWidth ?? 0,
+      maxWidth: resolvedMaxWidth,
+      minHeight: tightHeight ?? 0,
+      maxHeight: resolvedMaxHeight,
     );
   }
 
