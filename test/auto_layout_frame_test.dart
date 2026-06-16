@@ -196,7 +196,7 @@ void main() {
         expect(screenSize, equals(frameSize));
       });
 
-      testWidgets('supports IntrinsicHeight with hugContents',
+      testWidgets('supports IntrinsicHeight parent with hugContents',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           WidgetsApp(
@@ -223,7 +223,7 @@ void main() {
         expect(size.height, 50);
       });
 
-      testWidgets('supports IntrinsicWidth with hugContents',
+      testWidgets('supports IntrinsicWidth parent with hugContents',
           (WidgetTester tester) async {
         await tester.pumpWidget(
           WidgetsApp(
