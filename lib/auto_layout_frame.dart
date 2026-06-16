@@ -475,6 +475,9 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     markNeedsLayout();
   }
 
+  /// A handle to the clip rect layer used for clipping the child when the
+  /// overflow behavior is set to clip. This is used to avoid creating a new
+  /// layer every time the child is painted, which can be expensive.
   final LayerHandle<ClipRectLayer> _clipRectLayer =
       LayerHandle<ClipRectLayer>();
 
@@ -494,10 +497,14 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
   @override
   void paint(final PaintingContext context, final Offset offset) {
     if (child == null) {
+      // If the child is null, we don't need to paint anything.
       _clipRectLayer.layer = null;
       return;
     }
+
     if (overflow == AutoLayoutOverflowBehavior.clip) {
+      // If the overflow behavior is set to clip, we need to clip the child to the
+      // bounds of this render object.
       _clipRectLayer.layer = context.pushClipRect(
         needsCompositing,
         offset,
@@ -507,6 +514,8 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
         oldLayer: _clipRectLayer.layer,
       );
     } else {
+      // If the overflow behavior is not set to clip, we don't need to clip the
+      // child, so we can just paint it normally.
       _clipRectLayer.layer = null;
       super.paint(context, offset);
     }
@@ -570,6 +579,10 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     );
   }
 
+  /// Returns the layout constraints for the child based on the frame's resizing
+  /// behavior and the layout constraints from the parent.
+  ///
+  /// The [constraints] parameter is the layout constraints from the parent.
   BoxConstraints _childConstraints(final BoxConstraints constraints) {
     final double? tightWidth = _layoutExtent(
       resizing: horizontalResizing,
@@ -578,6 +591,7 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
       hasBoundedExtent: constraints.hasBoundedWidth,
       constrainExtent: constraints.constrainWidth,
     );
+
     final double? tightHeight = _layoutExtent(
       resizing: verticalResizing,
       fixedExtent: height,
@@ -593,7 +607,14 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     // still painting correctly. `scroll` must remain bounded so
     // SingleChildScrollView creates a finite viewport with non-zero scroll
     // extent.
-
+    //
+    // Note that this is a workaround for the fact that Flutter's layout system
+    // does not allow unbounded constraints to be passed down to children
+    // when the parent has a bounded size. This is a common issue when trying to
+    // implement "hug contents" behavior in Flutter, as it often requires the
+    // child to be able to grow beyond the parent's bounds. By allowing
+    // unbounded constraints in certain cases, we can achieve the desired layout
+    // behavior without running into layout errors.
     final bool isOverflowVisibleOrClip = switch (overflow) {
       AutoLayoutOverflowBehavior.visible ||
       AutoLayoutOverflowBehavior.clip =>
@@ -601,9 +622,13 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
       _ => false,
     };
 
+    // If the axis is set to hugContents, we want to allow the child to be
+    // unbounded in that axis, unless the overflow behavior is set to scroll.
     final double resolvedMaxWidth = tightWidth ??
         (isOverflowVisibleOrClip ? double.infinity : constraints.maxWidth);
 
+    // If the axis is set to hugContents, we want to allow the child to be
+    // unbounded in that axis, unless the overflow behavior is set to scroll.
     final double resolvedMaxHeight = tightHeight ??
         (isOverflowVisibleOrClip ? double.infinity : constraints.maxHeight);
 
@@ -615,6 +640,15 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     );
   }
 
+  /// Returns the target size of the frame based on its resizing behavior and the
+  /// size of its child.
+  ///
+  /// The target size is the size that the frame will actually take up in the
+  /// layout based on its children and its resizing behavior, after applying any
+  /// constraints from the parent.
+  ///
+  /// The [childSize] parameter is the size of the child.
+  /// The [constraints] parameter is the layout constraints from the parent.
   Size _targetSize(final Size childSize, final BoxConstraints constraints) {
     return Size(
       _resolvedExtent(
@@ -657,8 +691,14 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     required bool isMin,
   }) {
     return switch (resizing) {
+      // For fixed resizing, the intrinsic extent is the fixed size of the
+      // frame.
       AutoLayoutResizing.fixed => fixedExtent ?? 0,
+      // For hug contents resizing, the intrinsic extent is the size of the
+      // child.
       AutoLayoutResizing.hugContents => childExtent,
+      // For fill container resizing, the intrinsic extent is 0 for the minimum
+      // intrinsic extent and infinity for the maximum intrinsic extent.
       AutoLayoutResizing.fillContainer => isMin ? 0 : double.infinity,
     };
   }
@@ -685,8 +725,14 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     required double Function(double) constrainExtent,
   }) {
     return switch (resizing) {
+      // For fixed resizing, the layout extent is the fixed size of the frame.
       AutoLayoutResizing.fixed => constrainExtent(fixedExtent ?? 0),
+      // For hug contents resizing, the layout extent is null, which means that
+      // the frame will take up as much space as its children require.
       AutoLayoutResizing.hugContents => null,
+      // For fill container resizing, the layout extent is the maximum size of
+      // the frame if it has a bounded size in the layout, or null if it does
+      // not have a bounded size in the layout.
       AutoLayoutResizing.fillContainer => hasBoundedExtent ? maxExtent : null,
     };
   }
@@ -720,8 +766,16 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     required double Function(double) constrainExtent,
   }) {
     return switch (resizing) {
+      // For fixed resizing, the resolved extent is the fixed size of the frame,
+      // constrained by the layout constraints.
       AutoLayoutResizing.fixed => constrainExtent(fixedExtent ?? 0),
+      // For hug contents resizing, the resolved extent is the size of the child,
+      // constrained by the layout constraints.
       AutoLayoutResizing.hugContents => constrainExtent(childExtent),
+      // For fill container resizing, the resolved extent is the maximum size of
+      // the frame if it has a bounded size in the layout, or the size of the
+      // child if it does not have a bounded size, constrained by the layout
+      // constraints.
       AutoLayoutResizing.fillContainer =>
         hasBoundedExtent ? maxExtent : constrainExtent(childExtent),
     };
