@@ -959,6 +959,95 @@ void main() {
             .widget as SingleChildScrollView;
         expect(scrollView.scrollDirection, Axis.horizontal);
       });
+
+      testWidgets('scroll mode provides finite viewport with scroll extent',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: SizedBox(
+                width: 120,
+                height: 120,
+                child: AutoLayoutFrame(
+                  direction: AutoLayoutDirection.horizontal,
+                  overflow: AutoLayoutOverflowBehavior.scroll,
+                  horizontalResizing: AutoLayoutResizing.hugContents,
+                  verticalResizing: AutoLayoutResizing.hugContents,
+                  children: [
+                    Container(width: 96, height: 96, color: kColorRed),
+                    Container(width: 96, height: 96, color: kColorBlue),
+                    Container(width: 96, height: 96, color: kColorGreen),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        final SingleChildScrollView scrollView = find
+            .byType(SingleChildScrollView)
+            .evaluate()
+            .first
+            .widget as SingleChildScrollView;
+        expect(scrollView.scrollDirection, Axis.horizontal);
+
+        final ScrollableState scrollableState =
+            tester.state(find.byType(Scrollable));
+        final double before = scrollableState.position.pixels;
+        expect(scrollableState.position.maxScrollExtent, greaterThan(0));
+
+        await tester.drag(find.byType(SingleChildScrollView), Offset(-80, 0));
+        await tester.pumpAndSettle();
+
+        final double after = scrollableState.position.pixels;
+        expect(after, greaterThan(before));
+      });
+
+      testWidgets(
+          'vertical scroll mode provides finite viewport with scroll extent',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: SizedBox(
+                width: 120,
+                height: 120,
+                child: AutoLayoutFrame(
+                  direction: AutoLayoutDirection.vertical,
+                  overflow: AutoLayoutOverflowBehavior.scroll,
+                  horizontalResizing: AutoLayoutResizing.hugContents,
+                  verticalResizing: AutoLayoutResizing.hugContents,
+                  children: [
+                    Container(width: 96, height: 96, color: kColorRed),
+                    Container(width: 96, height: 96, color: kColorBlue),
+                    Container(width: 96, height: 96, color: kColorGreen),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        final SingleChildScrollView scrollView = find
+            .byType(SingleChildScrollView)
+            .evaluate()
+            .first
+            .widget as SingleChildScrollView;
+        expect(scrollView.scrollDirection, Axis.vertical);
+
+        final ScrollableState scrollableState =
+            tester.state(find.byType(Scrollable));
+        final double before = scrollableState.position.pixels;
+        expect(scrollableState.position.maxScrollExtent, greaterThan(0));
+
+        await tester.drag(find.byType(SingleChildScrollView), Offset(0, -80));
+        await tester.pumpAndSettle();
+
+        final double after = scrollableState.position.pixels;
+        expect(after, greaterThan(before));
+      });
     });
 
     group('MainAxisSize', () {

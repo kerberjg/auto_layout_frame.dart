@@ -575,16 +575,21 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
       constrainExtent: constraints.constrainHeight,
     );
 
-    // For hugContents axes: give the child unbounded space so its inner
-    // Row/Column can reach its natural size without firing a RenderFlex
-    // overflow assertion. AutoLayoutOverflowBehavior.none keeps the old
-    // bounded behavior and therefore still surfaces overflow assertions.
+    // For hugContents axes: keep children bounded by default.
+    //
+    // `visible` and `clip` use an internal OverflowBox, so we can allow
+    // unbounded child layout there to avoid flex overflow assertions while
+    // still painting correctly. `scroll` must remain bounded so
+    // SingleChildScrollView creates a finite viewport with non-zero scroll
+    // extent.
     final double resolvedMaxWidth = tightWidth ??
-        (overflow != AutoLayoutOverflowBehavior.none
+        (overflow == AutoLayoutOverflowBehavior.visible ||
+                overflow == AutoLayoutOverflowBehavior.clip
             ? double.infinity
             : constraints.maxWidth);
     final double resolvedMaxHeight = tightHeight ??
-        (overflow != AutoLayoutOverflowBehavior.none
+        (overflow == AutoLayoutOverflowBehavior.visible ||
+                overflow == AutoLayoutOverflowBehavior.clip
             ? double.infinity
             : constraints.maxHeight);
 
