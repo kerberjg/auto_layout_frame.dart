@@ -309,11 +309,6 @@ void main() {
               height: 50,
               child: AutoLayoutFrame(
                 overflow: AutoLayoutOverflowBehavior.none,
-                // clipBehavior: Clip.none is required to keep the old
-                // overflow-assertion behaviour. With any other Clip value the
-                // child is given unbounded space (so the flex never asserts)
-                // and the frame clips the result at paint time instead.
-                clipBehavior: Clip.none,
                 children: [
                   Container(width: 100, height: 100, color: kColorRed),
                 ],
