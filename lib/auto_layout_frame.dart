@@ -627,6 +627,18 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     );
   }
 
+  /// Returns the intrinsic extent of the frame based on its resizing behavior.
+  ///
+  /// The intrinsic extent is the size that the frame would like to be
+  /// based on its children and its resizing behavior.
+  ///
+  /// The [resizing] parameter indicates the resizing behavior of the frame.
+  /// The [fixedExtent] parameter is the fixed size of the frame if it is set to
+  /// fixed resizing.
+  /// The [childExtent] parameter is the size of the child if the frame is set
+  /// to hug contents resizing.
+  /// The [isMin] parameter indicates whether the minimum or maximum intrinsic
+  /// extent is being calculated.
   static double _intrinsicExtent({
     required AutoLayoutResizing resizing,
     required double? fixedExtent,
@@ -640,6 +652,20 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     };
   }
 
+  /// Returns the layout extent of the frame based on its resizing behavior.
+  ///
+  /// The layout extent is the size that the frame will actually take up in the
+  /// layout based on its children and its resizing behavior.
+  ///
+  /// The [resizing] parameter indicates the resizing behavior of the frame.
+  /// The [fixedExtent] parameter is the fixed size of the frame if it is set to
+  /// fixed resizing.
+  /// The [maxExtent] parameter is the maximum size of the frame if it is set to
+  /// fill container resizing.
+  /// The [hasBoundedExtent] parameter indicates whether the frame has a bounded
+  /// size in the layout.
+  /// The [constrainExtent] parameter is a function that constrains the extent
+  /// of the frame based on the layout constraints.
   static double? _layoutExtent({
     required AutoLayoutResizing resizing,
     required double? fixedExtent,
@@ -654,6 +680,25 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     };
   }
 
+  /// Returns the resolved extent of the frame based on its resizing behavior.
+  ///
+  /// The resolved extent is the size that the frame will actually take up in
+  /// the layout based on its children and its resizing behavior, after applying
+  /// any constraints from the parent.
+  ///
+  /// The [resizing] parameter indicates the resizing behavior of the frame.
+  /// The [fixedExtent] parameter is the fixed size of the frame if it is set to
+  /// fixed resizing.
+  /// The [childExtent] parameter is the size of the child if the frame is set
+  /// to hug contents resizing.
+  /// The [minExtent] parameter is the minimum size of the frame based on the
+  /// layout constraints.
+  /// The [maxExtent] parameter is the maximum size of the frame based on the
+  /// layout constraints.
+  /// The [hasBoundedExtent] parameter indicates whether the frame has a bounded
+  /// size in the layout.
+  /// The [constrainExtent] parameter is a function that constrains the extent
+  /// of the frame based on the layout constraints.
   static double _resolvedExtent({
     required AutoLayoutResizing resizing,
     required double? fixedExtent,
