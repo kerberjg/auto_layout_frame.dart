@@ -582,16 +582,19 @@ class _RenderAutoLayoutFrameSize extends RenderProxyBox {
     // still painting correctly. `scroll` must remain bounded so
     // SingleChildScrollView creates a finite viewport with non-zero scroll
     // extent.
+
+    final bool isOverflowVisibleOrClip = switch (overflow) {
+      AutoLayoutOverflowBehavior.visible ||
+      AutoLayoutOverflowBehavior.clip =>
+        true,
+      _ => false,
+    };
+
     final double resolvedMaxWidth = tightWidth ??
-        (overflow == AutoLayoutOverflowBehavior.visible ||
-                overflow == AutoLayoutOverflowBehavior.clip
-            ? double.infinity
-            : constraints.maxWidth);
+        (isOverflowVisibleOrClip ? double.infinity : constraints.maxWidth);
+
     final double resolvedMaxHeight = tightHeight ??
-        (overflow == AutoLayoutOverflowBehavior.visible ||
-                overflow == AutoLayoutOverflowBehavior.clip
-            ? double.infinity
-            : constraints.maxHeight);
+        (isOverflowVisibleOrClip ? double.infinity : constraints.maxHeight);
 
     return BoxConstraints(
       minWidth: tightWidth ?? 0,
