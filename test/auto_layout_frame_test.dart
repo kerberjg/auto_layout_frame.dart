@@ -1,6 +1,6 @@
+import 'package:auto_layout_frame/auto_layout_frame.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:auto_layout_frame/auto_layout_frame.dart';
 
 const kColorRed = Color(0xFFFF0000);
 const kColorBlue = Color(0xFF0000FF);
@@ -194,6 +194,108 @@ void main() {
         final Size screenSize = tester.getSize(find.byType(Center));
         final Size frameSize = tester.getSize(find.byType(AutoLayoutFrame));
         expect(screenSize, equals(frameSize));
+      });
+
+      testWidgets('supports IntrinsicHeight parent with hugContents',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: IntrinsicHeight(
+                child: AutoLayoutFrame(
+                  direction: AutoLayoutDirection.vertical,
+                  horizontalResizing: AutoLayoutResizing.hugContents,
+                  verticalResizing: AutoLayoutResizing.hugContents,
+                  children: [
+                    Container(width: 100, height: 50, color: kColorRed),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isNull);
+
+        final Size size = tester.getSize(find.byType(AutoLayoutFrame));
+        expect(size.width, 100);
+        expect(size.height, 50);
+      });
+
+      testWidgets('supports IntrinsicWidth parent with hugContents',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: IntrinsicWidth(
+                child: AutoLayoutFrame(
+                  direction: AutoLayoutDirection.horizontal,
+                  horizontalResizing: AutoLayoutResizing.hugContents,
+                  verticalResizing: AutoLayoutResizing.hugContents,
+                  children: [
+                    Container(width: 100, height: 50, color: kColorRed),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isNull);
+
+        final Size size = tester.getSize(find.byType(AutoLayoutFrame));
+        expect(size.width, 100);
+        expect(size.height, 50);
+      });
+
+      testWidgets('fixed intrinsic width reports explicit size',
+          (WidgetTester tester) async {
+        const double fixedWidth = 120;
+
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
+                width: fixedWidth,
+                horizontalResizing: AutoLayoutResizing.fixed,
+                verticalResizing: AutoLayoutResizing.hugContents,
+                children: [
+                  Container(width: 100, height: 50, color: kColorRed),
+                ],
+              ),
+            ),
+          ),
+        );
+
+        final RenderBox box = tester.renderObject(find.byType(AutoLayoutFrame));
+        expect(box.getMinIntrinsicWidth(50), fixedWidth);
+        expect(box.getMaxIntrinsicWidth(50), fixedWidth);
+      });
+
+      testWidgets('fillContainer intrinsic width reports 0 and infinity',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
+                direction: AutoLayoutDirection.horizontal,
+                horizontalResizing: AutoLayoutResizing.fillContainer,
+                verticalResizing: AutoLayoutResizing.hugContents,
+                children: [
+                  Container(width: 100, height: 50, color: kColorRed),
+                ],
+              ),
+            ),
+          ),
+        );
+
+        final RenderBox box = tester.renderObject(find.byType(AutoLayoutFrame));
+        expect(box.getMinIntrinsicWidth(50), 0);
+        expect(box.getMaxIntrinsicWidth(50), double.infinity);
       });
     });
 
@@ -856,6 +958,95 @@ void main() {
             .first
             .widget as SingleChildScrollView;
         expect(scrollView.scrollDirection, Axis.horizontal);
+      });
+
+      testWidgets('scroll mode provides finite viewport with scroll extent',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: SizedBox(
+                width: 120,
+                height: 120,
+                child: AutoLayoutFrame(
+                  direction: AutoLayoutDirection.horizontal,
+                  overflow: AutoLayoutOverflowBehavior.scroll,
+                  horizontalResizing: AutoLayoutResizing.hugContents,
+                  verticalResizing: AutoLayoutResizing.hugContents,
+                  children: [
+                    Container(width: 96, height: 96, color: kColorRed),
+                    Container(width: 96, height: 96, color: kColorBlue),
+                    Container(width: 96, height: 96, color: kColorGreen),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        final SingleChildScrollView scrollView = find
+            .byType(SingleChildScrollView)
+            .evaluate()
+            .first
+            .widget as SingleChildScrollView;
+        expect(scrollView.scrollDirection, Axis.horizontal);
+
+        final ScrollableState scrollableState =
+            tester.state(find.byType(Scrollable));
+        final double before = scrollableState.position.pixels;
+        expect(scrollableState.position.maxScrollExtent, greaterThan(0));
+
+        await tester.drag(find.byType(SingleChildScrollView), Offset(-80, 0));
+        await tester.pumpAndSettle();
+
+        final double after = scrollableState.position.pixels;
+        expect(after, greaterThan(before));
+      });
+
+      testWidgets(
+          'vertical scroll mode provides finite viewport with scroll extent',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: SizedBox(
+                width: 120,
+                height: 120,
+                child: AutoLayoutFrame(
+                  direction: AutoLayoutDirection.vertical,
+                  overflow: AutoLayoutOverflowBehavior.scroll,
+                  horizontalResizing: AutoLayoutResizing.hugContents,
+                  verticalResizing: AutoLayoutResizing.hugContents,
+                  children: [
+                    Container(width: 96, height: 96, color: kColorRed),
+                    Container(width: 96, height: 96, color: kColorBlue),
+                    Container(width: 96, height: 96, color: kColorGreen),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        final SingleChildScrollView scrollView = find
+            .byType(SingleChildScrollView)
+            .evaluate()
+            .first
+            .widget as SingleChildScrollView;
+        expect(scrollView.scrollDirection, Axis.vertical);
+
+        final ScrollableState scrollableState =
+            tester.state(find.byType(Scrollable));
+        final double before = scrollableState.position.pixels;
+        expect(scrollableState.position.maxScrollExtent, greaterThan(0));
+
+        await tester.drag(find.byType(SingleChildScrollView), Offset(0, -80));
+        await tester.pumpAndSettle();
+
+        final double after = scrollableState.position.pixels;
+        expect(after, greaterThan(before));
       });
     });
 
