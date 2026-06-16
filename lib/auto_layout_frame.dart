@@ -360,6 +360,17 @@ class AutoLayoutFrame extends StatelessWidget {
   }
 }
 
+/// `AutoLayoutFrame.build()` was wrapped in a `LayoutBuilder` widget, which
+/// refuses intrinsic size queries. (It can't know how big it'll be until after
+/// it's run the layout callback.) That means any child widget with an
+/// `IntrinsicHeight`, `IntrinsicWidth` or similar would have caused an
+/// exception.
+///
+/// This widget is a fix for that, by implementing a custom `RenderObject` that
+/// allows intrinsic size queries to pass through to the child, while still
+/// respecting the frame's resizing behavior and overflow behavior.
+///
+/// ref: https://github.com/kerberjg/auto_layout_frame.dart/issues/6
 class _AutoLayoutFrameSize extends SingleChildRenderObjectWidget {
   const _AutoLayoutFrameSize({
     required this.horizontalResizing,
