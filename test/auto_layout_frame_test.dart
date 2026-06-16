@@ -1,6 +1,6 @@
+import 'package:auto_layout_frame/auto_layout_frame.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:auto_layout_frame/auto_layout_frame.dart';
 
 const kColorRed = Color(0xFFFF0000);
 const kColorBlue = Color(0xFF0000FF);
@@ -194,6 +194,108 @@ void main() {
         final Size screenSize = tester.getSize(find.byType(Center));
         final Size frameSize = tester.getSize(find.byType(AutoLayoutFrame));
         expect(screenSize, equals(frameSize));
+      });
+
+      testWidgets('supports IntrinsicHeight with hugContents',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: IntrinsicHeight(
+                child: AutoLayoutFrame(
+                  direction: AutoLayoutDirection.vertical,
+                  horizontalResizing: AutoLayoutResizing.hugContents,
+                  verticalResizing: AutoLayoutResizing.hugContents,
+                  children: [
+                    Container(width: 100, height: 50, color: kColorRed),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isNull);
+
+        final Size size = tester.getSize(find.byType(AutoLayoutFrame));
+        expect(size.width, 100);
+        expect(size.height, 50);
+      });
+
+      testWidgets('supports IntrinsicWidth with hugContents',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: IntrinsicWidth(
+                child: AutoLayoutFrame(
+                  direction: AutoLayoutDirection.horizontal,
+                  horizontalResizing: AutoLayoutResizing.hugContents,
+                  verticalResizing: AutoLayoutResizing.hugContents,
+                  children: [
+                    Container(width: 100, height: 50, color: kColorRed),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        expect(tester.takeException(), isNull);
+
+        final Size size = tester.getSize(find.byType(AutoLayoutFrame));
+        expect(size.width, 100);
+        expect(size.height, 50);
+      });
+
+      testWidgets('fixed intrinsic width reports explicit size',
+          (WidgetTester tester) async {
+        const double fixedWidth = 120;
+
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
+                width: fixedWidth,
+                horizontalResizing: AutoLayoutResizing.fixed,
+                verticalResizing: AutoLayoutResizing.hugContents,
+                children: [
+                  Container(width: 100, height: 50, color: kColorRed),
+                ],
+              ),
+            ),
+          ),
+        );
+
+        final RenderBox box = tester.renderObject(find.byType(AutoLayoutFrame));
+        expect(box.getMinIntrinsicWidth(50), fixedWidth);
+        expect(box.getMaxIntrinsicWidth(50), fixedWidth);
+      });
+
+      testWidgets('fillContainer intrinsic width reports 0 and infinity',
+          (WidgetTester tester) async {
+        await tester.pumpWidget(
+          WidgetsApp(
+            color: Color(0xFFFFFFFF),
+            builder: (context, child) => Center(
+              child: AutoLayoutFrame(
+                direction: AutoLayoutDirection.horizontal,
+                horizontalResizing: AutoLayoutResizing.fillContainer,
+                verticalResizing: AutoLayoutResizing.hugContents,
+                children: [
+                  Container(width: 100, height: 50, color: kColorRed),
+                ],
+              ),
+            ),
+          ),
+        );
+
+        final RenderBox box = tester.renderObject(find.byType(AutoLayoutFrame));
+        expect(box.getMinIntrinsicWidth(50), 0);
+        expect(box.getMaxIntrinsicWidth(50), double.infinity);
       });
     });
 

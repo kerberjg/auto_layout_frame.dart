@@ -144,32 +144,21 @@ class AutoLayoutFrame extends StatelessWidget {
   /// taking care of resizing behavior and background color.
   @override
   Widget build(final BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
-      // debugPrint('Frame constraints:${constraints}');
+    // Wrap in ColoredBox if [backgroundColor] is specified
+    final Widget child = backgroundColor != null
+        ? ColoredBox(
+            color: backgroundColor!,
+            child: _buildInnerLayout(context),
+          )
+        : _buildInnerLayout(context);
 
-      // Wrap in ColoredBox if [backgroundColor] is specified
-      final Widget child = backgroundColor != null
-          ? ColoredBox(
-              color: backgroundColor!,
-              child: _buildInnerLayout(context),
-            )
-          : _buildInnerLayout(context);
-
-      final Widget outerLayout = SizedBox(
-          width: switch (horizontalResizing) {
-            AutoLayoutResizing.fillContainer => constraints.maxWidth,
-            AutoLayoutResizing.hugContents => null,
-            AutoLayoutResizing.fixed => width,
-          },
-          height: switch (verticalResizing) {
-            AutoLayoutResizing.fillContainer => constraints.maxHeight,
-            AutoLayoutResizing.hugContents => null,
-            AutoLayoutResizing.fixed => height,
-          },
-          child: child);
-
-      return outerLayout;
-    });
+    return _AutoLayoutFrameSize(
+      horizontalResizing: horizontalResizing,
+      verticalResizing: verticalResizing,
+      width: width,
+      height: height,
+      child: child,
+    );
   }
 
   /// Takes care of padding as well as children's inner placement
@@ -367,5 +356,243 @@ class AutoLayoutFrame extends StatelessWidget {
   /// Returns a perpendicular axis to the one provided
   static Axis flipAxis(final Axis a) {
     return a == Axis.horizontal ? Axis.vertical : Axis.horizontal;
+  }
+}
+
+class _AutoLayoutFrameSize extends SingleChildRenderObjectWidget {
+  const _AutoLayoutFrameSize({
+    required this.horizontalResizing,
+    required this.verticalResizing,
+    required this.width,
+    required this.height,
+    super.child,
+  });
+
+  final AutoLayoutResizing horizontalResizing;
+  final AutoLayoutResizing verticalResizing;
+  final double? width;
+  final double? height;
+
+  @override
+  RenderObject createRenderObject(final BuildContext context) {
+    return _RenderAutoLayoutFrameSize(
+      horizontalResizing: horizontalResizing,
+      verticalResizing: verticalResizing,
+      width: width,
+      height: height,
+    );
+  }
+
+  @override
+  void updateRenderObject(final BuildContext context,
+      final _RenderAutoLayoutFrameSize renderObject) {
+    renderObject
+      ..horizontalResizing = horizontalResizing
+      ..verticalResizing = verticalResizing
+      ..width = width
+      ..height = height;
+  }
+}
+
+class _RenderAutoLayoutFrameSize extends RenderProxyBox {
+  _RenderAutoLayoutFrameSize({
+    required AutoLayoutResizing horizontalResizing,
+    required AutoLayoutResizing verticalResizing,
+    required double? width,
+    required double? height,
+    RenderBox? child,
+  })  : _horizontalResizing = horizontalResizing,
+        _verticalResizing = verticalResizing,
+        _width = width,
+        _height = height,
+        super(child);
+
+  AutoLayoutResizing _horizontalResizing;
+  AutoLayoutResizing get horizontalResizing => _horizontalResizing;
+  set horizontalResizing(final AutoLayoutResizing value) {
+    if (_horizontalResizing == value) {
+      return;
+    }
+    _horizontalResizing = value;
+    markNeedsLayout();
+  }
+
+  AutoLayoutResizing _verticalResizing;
+  AutoLayoutResizing get verticalResizing => _verticalResizing;
+  set verticalResizing(final AutoLayoutResizing value) {
+    if (_verticalResizing == value) {
+      return;
+    }
+    _verticalResizing = value;
+    markNeedsLayout();
+  }
+
+  double? _width;
+  double? get width => _width;
+  set width(final double? value) {
+    if (_width == value) {
+      return;
+    }
+    _width = value;
+    markNeedsLayout();
+  }
+
+  double? _height;
+  double? get height => _height;
+  set height(final double? value) {
+    if (_height == value) {
+      return;
+    }
+    _height = value;
+    markNeedsLayout();
+  }
+
+  @override
+  void performLayout() {
+    if (child == null) {
+      size = constraints.constrain(_targetSize(Size.zero, constraints));
+      return;
+    }
+
+    child!.layout(_childConstraints(constraints), parentUsesSize: true);
+    size = constraints.constrain(_targetSize(child!.size, constraints));
+  }
+
+  @override
+  Size computeDryLayout(final BoxConstraints constraints) {
+    final Size childSize =
+        child?.getDryLayout(_childConstraints(constraints)) ?? Size.zero;
+    return constraints.constrain(_targetSize(childSize, constraints));
+  }
+
+  @override
+  double computeMinIntrinsicWidth(final double height) {
+    return _intrinsicExtent(
+      resizing: horizontalResizing,
+      fixedExtent: width,
+      childExtent: child?.getMinIntrinsicWidth(height) ?? 0,
+      isMin: true,
+    );
+  }
+
+  @override
+  double computeMaxIntrinsicWidth(final double height) {
+    return _intrinsicExtent(
+      resizing: horizontalResizing,
+      fixedExtent: width,
+      childExtent: child?.getMaxIntrinsicWidth(height) ?? 0,
+      isMin: false,
+    );
+  }
+
+  @override
+  double computeMinIntrinsicHeight(final double width) {
+    return _intrinsicExtent(
+      resizing: verticalResizing,
+      fixedExtent: height,
+      childExtent: child?.getMinIntrinsicHeight(width) ?? 0,
+      isMin: true,
+    );
+  }
+
+  @override
+  double computeMaxIntrinsicHeight(final double width) {
+    return _intrinsicExtent(
+      resizing: verticalResizing,
+      fixedExtent: height,
+      childExtent: child?.getMaxIntrinsicHeight(width) ?? 0,
+      isMin: false,
+    );
+  }
+
+  BoxConstraints _childConstraints(final BoxConstraints constraints) {
+    final double? tightWidth = _layoutExtent(
+      resizing: horizontalResizing,
+      fixedExtent: width,
+      maxExtent: constraints.maxWidth,
+      hasBoundedExtent: constraints.hasBoundedWidth,
+      constrainExtent: constraints.constrainWidth,
+    );
+    final double? tightHeight = _layoutExtent(
+      resizing: verticalResizing,
+      fixedExtent: height,
+      maxExtent: constraints.maxHeight,
+      hasBoundedExtent: constraints.hasBoundedHeight,
+      constrainExtent: constraints.constrainHeight,
+    );
+
+    return BoxConstraints(
+      minWidth: tightWidth ?? constraints.minWidth,
+      maxWidth: tightWidth ?? constraints.maxWidth,
+      minHeight: tightHeight ?? constraints.minHeight,
+      maxHeight: tightHeight ?? constraints.maxHeight,
+    );
+  }
+
+  Size _targetSize(final Size childSize, final BoxConstraints constraints) {
+    return Size(
+      _resolvedExtent(
+        resizing: horizontalResizing,
+        fixedExtent: width,
+        childExtent: childSize.width,
+        minExtent: constraints.minWidth,
+        maxExtent: constraints.maxWidth,
+        hasBoundedExtent: constraints.hasBoundedWidth,
+        constrainExtent: constraints.constrainWidth,
+      ),
+      _resolvedExtent(
+        resizing: verticalResizing,
+        fixedExtent: height,
+        childExtent: childSize.height,
+        minExtent: constraints.minHeight,
+        maxExtent: constraints.maxHeight,
+        hasBoundedExtent: constraints.hasBoundedHeight,
+        constrainExtent: constraints.constrainHeight,
+      ),
+    );
+  }
+
+  static double _intrinsicExtent({
+    required AutoLayoutResizing resizing,
+    required double? fixedExtent,
+    required double childExtent,
+    required bool isMin,
+  }) {
+    return switch (resizing) {
+      AutoLayoutResizing.fixed => fixedExtent ?? 0,
+      AutoLayoutResizing.hugContents => childExtent,
+      AutoLayoutResizing.fillContainer => isMin ? 0 : double.infinity,
+    };
+  }
+
+  static double? _layoutExtent({
+    required AutoLayoutResizing resizing,
+    required double? fixedExtent,
+    required double maxExtent,
+    required bool hasBoundedExtent,
+    required double Function(double) constrainExtent,
+  }) {
+    return switch (resizing) {
+      AutoLayoutResizing.fixed => constrainExtent(fixedExtent ?? 0),
+      AutoLayoutResizing.hugContents => null,
+      AutoLayoutResizing.fillContainer => hasBoundedExtent ? maxExtent : null,
+    };
+  }
+
+  static double _resolvedExtent({
+    required AutoLayoutResizing resizing,
+    required double? fixedExtent,
+    required double childExtent,
+    required double minExtent,
+    required double maxExtent,
+    required bool hasBoundedExtent,
+    required double Function(double) constrainExtent,
+  }) {
+    return switch (resizing) {
+      AutoLayoutResizing.fixed => constrainExtent(fixedExtent ?? 0),
+      AutoLayoutResizing.hugContents => constrainExtent(childExtent),
+      AutoLayoutResizing.fillContainer =>
+        hasBoundedExtent ? maxExtent : constrainExtent(childExtent),
+    };
   }
 }
