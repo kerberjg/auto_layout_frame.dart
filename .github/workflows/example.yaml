@@ -2,7 +2,7 @@ name: "example"
 
 on:
   schedule:
-  - cron: "0 12 * * 3"
+    - cron: "0 12 * * 3"
   pull_request:
   push:
     branches:
@@ -23,6 +23,8 @@ jobs:
         include:
           - package: auto_layout_frame
             example: editor
+          - package: auto_layout_frame
+            example: snake_animation
     name: "${{ matrix.package }} (${{ matrix.example }})"
     uses: kerberjg/dart_flutter_ci_experiments/.github/workflows/pipeline.yaml@4224e695167e35d90952e21953b2f933b0f045b0
     with:
