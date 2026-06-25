@@ -1,6 +1,6 @@
 name: auto_layout_frame
 description: Flutter implementation of Figma's Auto Layout frames with support for alignment, padding, gap, resizing, and overflow behavior.
-version: 0.1.2
+version: 0.1.3
 
 license: MPL-2.0
 homepage: https://github.com/kerberjg/auto_layout_frame.dart
@@ -8,8 +8,8 @@ repository: https://github.com/kerberjg/auto_layout_frame.dart
 issue_tracker: https://github.com/kerberjg/auto_layout_frame.dart/issues
 
 environment:
-  sdk: '>=3.0.0 <4.0.0'
-  flutter: '>=3.27.0'
+  sdk: ">=3.0.0 <4.0.0"
+  flutter: ">=3.27.0"
 
 dependencies:
   flutter:
