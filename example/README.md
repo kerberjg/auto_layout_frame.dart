@@ -2,8 +2,8 @@
 
 This directory contains runnable examples that showcase how to use the package.
 
-## basic/
-A minimal, straightforward demonstration of the package API. Use this example to see the simplest setup and typical usage patterns.
+## editor/
+An interactive layout editor that allows you to experiment with the package's features in real-time. You can adjust properties, add/remove children, and see the layout update instantly.
 
-## advanced_example/
-An advanced example that applies the package API in an interactive CLI. It demonstrates more complex flows, user interaction, and extended features.
+## snake_animation/
+A fun animation that demonstrates `AutoLayoutFrame`'s dynamic capabilities. A snake-shaped container moves around the screen and its children follow, showcasing how the layout adapts to changing positions and sizes.

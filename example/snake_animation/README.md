@@ -1,17 +1,14 @@
 # snake_animation
 
-A new Flutter project.
+A demo showcasing smooth snake-like animation built with [`auto_layout_frame`](https://pub.dev/packages/auto_layout_frame). A row of colored squares animates fluidly as the `AutoLayoutFrame` reflows its children in response to the frame's changing position and size.
 
-## Getting Started
+<div align="center">
+<img src="https://github.com/kerberjg/auto_layout_frame.dart/blob/0.1.3/screenshots/snake-demo.gif?raw=true" width="50%"/>
+</div>
 
-This project is a starting point for a Flutter application.
+## Running
 
-A few resources to get you started if this is your first Flutter project:
+```bash
+flutter run
+```
 
-- [Learn Flutter](https://docs.flutter.dev/get-started/learn-flutter)
-- [Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Flutter learning resources](https://docs.flutter.dev/reference/learning-resources)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
